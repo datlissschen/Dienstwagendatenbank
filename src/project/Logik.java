@@ -5,49 +5,48 @@ import java.util.List;
 
 
 public class Logik {
-    public static void main(String[] args) {
-
-
-    }
 
     /*search for Fahrer object*/
-    public static List<String> fahrersuche(String a) {
+    public List<String> fahrersuche(String a) {
         /*Use Liste for ouput*/
         List<String> fahrersoutput  = new ArrayList<>();
         /*iterate through List to find fahrer*/
         for (Fahrer fahrer : Data.fahrerListe) {
+            boolean found = false;
             if (fahrer.getFahrerID().contains(a)) {
-                fahrersoutput.add((fahrer.getFahrerID() + ", " + fahrer.getVorname()
-                        + " " + fahrer.getNachname() + ", " + fahrer.getFuehrerscheinklasse()));
+                found = true;
             } else if (fahrer.getVorname().contains(a)) {
-                fahrersoutput.add(fahrer.getFahrerID() + ", " + fahrer.getVorname()
-                        + " " + fahrer.getNachname() + ", " + fahrer.getFuehrerscheinklasse());
+                found = true;
             } else if (fahrer.getNachname().contains(a)) {
-                fahrersoutput.add(fahrer.getFahrerID() + ", " + fahrer.getVorname()
-                        + " " + fahrer.getNachname() + ", " + fahrer.getFuehrerscheinklasse());
+                found = true;
+            }
+            if (found) {
+                found = true;
             }
         }
         return(fahrersoutput);
     }
 
     /* find a Dienstwagen*/
-    public static List<String> fahrzeugsuche(String a) {
+    public List<String> fahrzeugsuche(String a) {
         /*List for ouput*/
         List<String> fahrzeugsout = new ArrayList<>();
         /*iterate through List to search for the matching dienstwagen objects*/
         for (Dienstwagen dienstwagen : Data.dienstwagenListe) {
+            boolean found = false;
             if (dienstwagen.getFahrzeugId().contains(a)) {
-                fahrzeugsout.add(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
-                        + ", " + dienstwagen.getHersteller() + ", " + dienstwagen.getModell());
+                found = true;
             } else if (dienstwagen.getHersteller().contains(a)) {
-                fahrzeugsout.add(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
-                        + ", " + dienstwagen.getHersteller() + ", " + dienstwagen.getModell());
+                found = true;
             } else if (dienstwagen.getKennzeichen().contains(a)) {
+                found = true;
+            } else if (dienstwagen.getModell().contains(a)) {
+                found = true;
+            }
+
+            if (found) {
                 fahrzeugsout.add(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
                         + ", " + dienstwagen.getHersteller() + ", " + dienstwagen.getModell());
-            } else if (dienstwagen.getModell().contains(a)) {
-                fahrzeugsout.add(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
-                + ", " + dienstwagen.getHersteller() + ", " + dienstwagen.getModell());
             }
         }
         return fahrzeugsout;
@@ -59,7 +58,7 @@ public class Logik {
      * @param inputString Format: "fahrzeugID;startzeit" (z.B. "V_001;2025-06-19T08:00:00")
      * @return
      */
-    public static List<String> blitzer(String inputString) {
+    public List<String> blitzer(String inputString) {
         /*List for Output*/
         List <String> blitzeroutput = new ArrayList<>();
         /*check format*/
@@ -98,11 +97,11 @@ public class Logik {
                 }
             }
             if (!fahrerGefunden) {
-                blitzeroutput.add("Fehler: project.Fahrer-ID '" + gefundenerFahrerId + "' aus project.Fahrt nicht in Fahrerliste gefunden.");
+                blitzeroutput.add("Fehler: Fahrer-ID '" + gefundenerFahrerId + "' aus Fahrt nicht in Fahrerliste gefunden.");
             }
         } else {
             /* search not successful*/
-            blitzeroutput.add("Kein project.Fahrer gefunden für Fahrzeug-ID: " + gesuchteFahrzeugID + " und Startzeit: " + gesuchteStartzeit);
+            blitzeroutput.add("Kein Fahrer gefunden für Fahrzeug-ID: " + gesuchteFahrzeugID + " und Startzeit: " + gesuchteStartzeit);
         }
         return blitzeroutput;
     }
@@ -112,7 +111,7 @@ public class Logik {
      *          searching fahrerId is fundsucher and the date for the search is suchdatum
      * @return
      */
-    public static List<String> fundsuche(String a) {
+    public List<String> fundsuche(String a) {
         /*List to gather the output*/
         List <String> fundsucheoutput = new ArrayList<>();
 
@@ -202,10 +201,21 @@ public class Logik {
             fundsucheoutput.add("Keine project.Fahrer gefunden. Viel Glück mit der Suche.");
         } else {
             for (String currentFahrerID : ausgaben){
-                fundsucheoutput.add((String.join(", ", ausgaben)));
+                fundsucheoutput.add((String.join(", ", currentFahrerID)));
             }
 
         }
         return fundsucheoutput;
+    }
+
+    public void printFundsuchanfrage(List<String> ausgaben){
+        for (String s : ausgaben) {
+            System.out.print(s);
+        }
+    }
+    public void print(List<String> fundsucheoutput) {
+        for (String s : fundsucheoutput){
+            System.out.println(s);
+        }
     }
 }
