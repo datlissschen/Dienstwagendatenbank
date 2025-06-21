@@ -1,9 +1,11 @@
+package project;
+
 public class Fahrer {
 
-    private String fahrerID;
-    private String vorname;
-    private String nachname;
-    private String fuehrerscheinklasse;
+    private final String fahrerID;
+    private final String vorname;
+    private final String nachname;
+    private final String fuehrerscheinklasse;
 
     public Fahrer(String fahrerID, String vorname, String nachname, String fuehrerscheinklasse) {
         this.fahrerID = fahrerID;

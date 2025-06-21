@@ -1,24 +1,22 @@
+package project;
 
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
+
 
 public class DataModellReader {
-    /*import file and convert it into the data models Dienstwagen, Fahrt and Fahrer*/
+    /*import file and convert it into the data models Dienstwagen, project.Fahrt and project.Fahrer*/
 
     /*create the lists with the data models*/
-    private static List<Fahrt> fahrtenListe = new ArrayList<>();
-    private static List<Fahrer> fahrerListe = new ArrayList<>();
-    private static List<Dienstwagen> dienstwagenListe = new ArrayList<>();
 
-    public static void main(String[] args) {
-        String filepath = "src/dienstwagenprojekt2025.db";
+
+    public static void populateModels(String source) {
 
         /*read file, if not possible throw exception*/
-        try(BufferedReader reader = new BufferedReader(new FileReader(filepath))){
+        try(BufferedReader reader = new BufferedReader(new FileReader(source))){
 
             String line;
             /*read lines, while it is not zero*/
@@ -31,36 +29,41 @@ public class DataModellReader {
 
                 /*split the line with indicator "," */
                 String[] data = line.split(",");
+                /* skip the definition for new entity*/
+                String firstData = data[0].trim();
+                if(firstData.startsWith("New_Entity:")){
+                    continue;
+                }
 
                 /*differ into the different models*/
                 /*use class Fahrten*/
                 if (data.length == 6){
-                    /*find mistake*/
-                    System.out.println("Verarbeite Zeile als Fahrt: " + line);
-                    System.out.println("data[2]: '" + data[2] + "', data[3]: '" + data[3] + "'");
-
                     try{
                         /*create a new object and parse the startKm and endKm from String in int, add object to fahrtenListe*/
-                        Fahrt neu = new Fahrt(data[0], data[1], Integer.parseInt(data[2]), Integer.parseInt(data[3]), data[4], data[5]);
-                        fahrtenListe.add(neu);
+                        Fahrt neu = new Fahrt(data[0], data[1], Integer.parseInt(data[2].trim()), Integer.parseInt(data[3].trim()), data[4], data[5]);
+                        Data.fahrtenListe.add(neu);
                     }
                     catch(NumberFormatException e){
+                        /*find mistake */
+                        System.out.println("Verarbeite Zeile als project.Fahrt: " + line);
+                        System.out.println("data[2]: '" + data[2] + "', data[3]: '" + data[3] + "'");
+
                         System.err.println("Fehler beim Zahlenformat!");
                     }
 
                 } else if(data.length == 4){
                     char firstChar = data[0].charAt(0);
-                    /*use class Fahrer*/
+                    /*use class project.Fahrer*/
                     if(firstChar == 'F'){
                         /*create new object and add to fahrerliste*/
                         Fahrer neu = new Fahrer(data[0], data[1], data[2], data[3]);
-                        fahrerListe.add(neu);
+                        Data.fahrerListe.add(neu);
                     }
                     /*use class Dienstwagen*/
                     if(firstChar == 'V'){
                         /*create new object and add to dienstwagenliste*/
                         Dienstwagen neu = new Dienstwagen(data[0], data[1], data[2], data[3]);
-                        dienstwagenListe.add(neu);
+                        Data.dienstwagenListe.add(neu);
                     }
                 }
             }

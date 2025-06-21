@@ -1,15 +1,29 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import project.DataModellReader;
+import project.*;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        /*load the data in the beginning*/
+        DataModellReader.populateModels("src/project/dienstwagenprojekt2025.db");
+
+
+        /*try some tests*/
+        String suchanfrageFahrer = "Hoff";
+        System.out.println("Starte Suche für Hoff");
+        Logik.fahrersuche(suchanfrageFahrer);
+
+        String suchanfrageFahrzeuge = "Ford";
+        System.out.println("Starte Suche für Fahrzeug ");
+        Logik.fahrzeugsuche(suchanfrageFahrzeuge);
+
+        String blitzertest = "S-MN-9932;2024-02-14T13:57:43";
+        System.out.println("Starte Blitzertest für: " + blitzertest);
+        Logik.blitzer(blitzertest);
+
+        String fundsuchanfrageFahrer = "F003;2024-08-13"; // Beispiel-Suchanfrage
+        System.out.println("Starte Fundsuche für: " + fundsuchanfrageFahrer);
+        Logik.fundsuche(fundsuchanfrageFahrer);
+
     }
 }

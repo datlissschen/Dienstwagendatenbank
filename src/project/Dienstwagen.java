@@ -1,18 +1,20 @@
-public class Dienstwagen {
-    private String fahrzeugId;
-    private String hersteller;
-    private String modell;
-    private String kennzeichen;
+package project;
 
-    public Dienstwagen(String fahrzeugId, String hersteller, String modell, String kennzeichen) {
-        this.fahrzeugId = fahrzeugId;
+public class Dienstwagen {
+    private final String fahrzeugID;
+    private final String hersteller;
+    private final String modell;
+    private final String kennzeichen;
+
+    public Dienstwagen(String fahrzeugID, String hersteller, String modell, String kennzeichen) {
+        this.fahrzeugID = fahrzeugID;
         this.hersteller = hersteller;
         this.modell = modell;
         this.kennzeichen = kennzeichen;
     }
 
     public String getFahrzeugId() {
-        return fahrzeugId;
+        return fahrzeugID;
     }
 
     public String getHersteller() {
