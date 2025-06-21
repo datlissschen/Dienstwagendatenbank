@@ -6,9 +6,9 @@ public class Main {
     public static void main(String[] args) {
 
         /*load the data in the beginning*/
-        DataModellReader.populateModels("src/project/dienstwagenprojekt2025.db");
 
-        Logik logik = new Logik();
+        Data data = new Data("src/project/dienstwagenprojekt2025.db");
+        Logik logik = new Logik(data);
 
         /*try some tests*/
         String suchanfrageFahrer = "Hoff";
@@ -26,6 +26,11 @@ public class Main {
         String fundsuchanfrageFahrer = "F003;2024-08-13"; // Beispiel-Suchanfrage
         System.out.println("Starte Fundsuche für: " + fundsuchanfrageFahrer);
         logik.printFundsuchanfrage(logik.fundsuche(fundsuchanfrageFahrer));
+
+        data.fahrerListe.clear();
+
+        System.out.println("Starte Suche für Hoff");
+        logik.print(logik.fahrersuche(suchanfrageFahrer));
 
     }
 }

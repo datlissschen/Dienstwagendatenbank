@@ -5,13 +5,17 @@ import java.util.List;
 
 
 public class Logik {
+    private Data dataFile;
+    public Logik(Data data) {
+        this.dataFile = data;
+    }
 
     /*search for Fahrer object*/
     public List<String> fahrersuche(String a) {
         /*Use Liste for ouput*/
         List<String> fahrersoutput  = new ArrayList<>();
         /*iterate through List to find fahrer*/
-        for (Fahrer fahrer : Data.fahrerListe) {
+        for (Fahrer fahrer : dataFile.fahrerListe) {
             boolean found = false;
             if (fahrer.getFahrerID().contains(a)) {
                 found = true;
@@ -21,8 +25,12 @@ public class Logik {
                 found = true;
             }
             if (found) {
-                found = true;
+                fahrersoutput.add(fahrer.getFahrerID() + ", " + fahrer.getVorname()
+                        + " " + fahrer.getNachname() + ", " + fahrer.getFuehrerscheinklasse());
             }
+        }
+        if (fahrersoutput.isEmpty()) {
+            fahrersoutput.add("No fahrers found");
         }
         return(fahrersoutput);
     }
@@ -32,7 +40,7 @@ public class Logik {
         /*List for ouput*/
         List<String> fahrzeugsout = new ArrayList<>();
         /*iterate through List to search for the matching dienstwagen objects*/
-        for (Dienstwagen dienstwagen : Data.dienstwagenListe) {
+        for (Dienstwagen dienstwagen : dataFile.dienstwagenListe) {
             boolean found = false;
             if (dienstwagen.getFahrzeugId().contains(a)) {
                 found = true;
@@ -76,7 +84,7 @@ public class Logik {
         boolean fahrtGefunden = false;   // flag if a project.Fahrt has actually been found
 
         /* search project.Fahrt*/
-        for (Fahrt fahrt : Data.fahrtenListe) {
+        for (Fahrt fahrt : dataFile.fahrtenListe) {
             if (fahrt.getFahrzeugID().equals(gesuchteFahrzeugID) &&
                     fahrt.getStartzeit().equals(gesuchteStartzeit)) {
 
@@ -89,7 +97,7 @@ public class Logik {
         if (fahrtGefunden) {
             /*find the project.Fahrer for the project.Fahrt*/
             boolean fahrerGefunden = false;
-            for (Fahrer fahrer : Data.fahrerListe) {
+            for (Fahrer fahrer : dataFile.fahrerListe) {
                 if (fahrer.getFahrerID().equals(gefundenerFahrerId)) {
                     blitzeroutput.add("Gefundener project.Fahrer: " + fahrer.getVorname() + " " + fahrer.getNachname());
                     fahrerGefunden = true;
@@ -131,7 +139,7 @@ public class Logik {
 
         /*everytime the driver has driven something on the day, save the FahrzeugID */
         /*iterating through every drive*/
-        for (Fahrt fahrt : Data.fahrtenListe) {
+        for (Fahrt fahrt : dataFile.fahrtenListe) {
             if (fahrt.getFahrerID().equals(fundsucher)) {
                 /*Starzeit come in the format 2024-01-01T20:08:53, only need first 10 characters(0-9) for precise day*/
                 if (fahrt.getStartzeit() != null && fahrt.getStartzeit().length() >= 10 &&fahrt.getStartzeit().substring(0,10).equals(suchdatum)) {
@@ -146,7 +154,7 @@ public class Logik {
             return fundsucheoutput;
         }
         /*searching in the possible drives*/
-        for (Fahrt fahrt : Data.fahrtenListe) {
+        for (Fahrt fahrt : dataFile.fahrtenListe) {
             /*control the date*/
             if (fahrt.getStartzeit() != null && fahrt.getStartzeit().substring(0, 10).equals(suchdatum)) {
                 /*make sure that the cars have been used by the fundsucher*/
@@ -168,7 +176,7 @@ public class Logik {
 
             Fahrer gefundenerFahrer = null;
             /*search for the drivers in the main fahrerListe*/
-            for (Fahrer extrahierteFahrer : Data.fahrerListe){
+            for (Fahrer extrahierteFahrer : dataFile.fahrerListe){
                 if (extrahierteFahrer.getFahrerID().equals(currentFahrerId)) {
                     gefundenerFahrer = extrahierteFahrer;
                     break;
@@ -177,7 +185,7 @@ public class Logik {
 
             /*search for the vehicles driven by this 'other' driver on the specified date and used by the fundsucher*/
             if (gefundenerFahrer != null){
-                for (Fahrt fundFahrt : Data.fahrtenListe){
+                for (Fahrt fundFahrt : dataFile.fahrtenListe){
                     /* Check match the current 'other' driver, the date, AND a vehicle the fundsucher used*/
                     if (fundFahrt.getFahrerID().equals(currentFahrerId) &&
                             fundFahrt.getStartzeit().length() >= 10 &&

@@ -13,7 +13,7 @@ public class DataModellReader {
     /*create the lists with the data models*/
 
 
-    public static void populateModels(String source) {
+    public static void populateModels(Data dataClass, String source) {
 
         /*read file, if not possible throw exception*/
         try(BufferedReader reader = new BufferedReader(new FileReader(source))){
@@ -41,7 +41,7 @@ public class DataModellReader {
                     try{
                         /*create a new object and parse the startKm and endKm from String in int, add object to fahrtenListe*/
                         Fahrt neu = new Fahrt(data[0], data[1], Integer.parseInt(data[2].trim()), Integer.parseInt(data[3].trim()), data[4], data[5]);
-                        Data.fahrtenListe.add(neu);
+                        dataClass.fahrtenListe.add(neu);
                     }
                     catch(NumberFormatException e){
                         /*find mistake */
@@ -57,13 +57,13 @@ public class DataModellReader {
                     if(firstChar == 'F'){
                         /*create new object and add to fahrerliste*/
                         Fahrer neu = new Fahrer(data[0], data[1], data[2], data[3]);
-                        Data.fahrerListe.add(neu);
+                        dataClass.fahrerListe.add(neu);
                     }
                     /*use class Dienstwagen*/
                     if(firstChar == 'V'){
                         /*create new object and add to dienstwagenliste*/
                         Dienstwagen neu = new Dienstwagen(data[0], data[1], data[2], data[3]);
-                        Data.dienstwagenListe.add(neu);
+                        dataClass.dienstwagenListe.add(neu);
                     }
                 }
             }
