@@ -11,54 +11,63 @@ public class Logik {
     }
 
     /*search for Fahrer object*/
-    public static void fahrersuche(String a) {
+    public static List<String> fahrersuche(String a) {
+        /*Use Liste for ouput*/
+        List<String> fahrersoutput  = new ArrayList<>();
         /*iterate through List to find fahrer*/
         for (Fahrer fahrer : Data.fahrerListe) {
             if (fahrer.getFahrerID().contains(a)) {
-                System.out.println(fahrer.getFahrerID() + ", " + fahrer.getVorname()
-                        + " " + fahrer.getNachname() + ", " + fahrer.getFuehrerscheinklasse());
+                fahrersoutput.add((fahrer.getFahrerID() + ", " + fahrer.getVorname()
+                        + " " + fahrer.getNachname() + ", " + fahrer.getFuehrerscheinklasse()));
             } else if (fahrer.getVorname().contains(a)) {
-                System.out.println(fahrer.getFahrerID() + ", " + fahrer.getVorname()
+                fahrersoutput.add(fahrer.getFahrerID() + ", " + fahrer.getVorname()
                         + " " + fahrer.getNachname() + ", " + fahrer.getFuehrerscheinklasse());
             } else if (fahrer.getNachname().contains(a)) {
-                System.out.println(fahrer.getFahrerID() + ", " + fahrer.getVorname()
+                fahrersoutput.add(fahrer.getFahrerID() + ", " + fahrer.getVorname()
                         + " " + fahrer.getNachname() + ", " + fahrer.getFuehrerscheinklasse());
             }
         }
+        return(fahrersoutput);
     }
 
     /* find a Dienstwagen*/
-    public static void fahrzeugsuche(String a) {
+    public static List<String> fahrzeugsuche(String a) {
+        /*List for ouput*/
+        List<String> fahrzeugsout = new ArrayList<>();
         /*iterate through List to search for the matching dienstwagen objects*/
         for (Dienstwagen dienstwagen : Data.dienstwagenListe) {
             if (dienstwagen.getFahrzeugId().contains(a)) {
-                System.out.println(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
+                fahrzeugsout.add(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
                         + ", " + dienstwagen.getHersteller() + ", " + dienstwagen.getModell());
             } else if (dienstwagen.getHersteller().contains(a)) {
-                System.out.println(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
+                fahrzeugsout.add(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
                         + ", " + dienstwagen.getHersteller() + ", " + dienstwagen.getModell());
             } else if (dienstwagen.getKennzeichen().contains(a)) {
-                System.out.println(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
+                fahrzeugsout.add(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
                         + ", " + dienstwagen.getHersteller() + ", " + dienstwagen.getModell());
             } else if (dienstwagen.getModell().contains(a)) {
-                System.out.println(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
+                fahrzeugsout.add(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
                 + ", " + dienstwagen.getHersteller() + ", " + dienstwagen.getModell());
             }
         }
+        return fahrzeugsout;
     }
 
 
     /***
      * find project.Fahrer for given time and Dienstwagen (FahrzeugID)
      * @param inputString Format: "fahrzeugID;startzeit" (z.B. "V_001;2025-06-19T08:00:00")
+     * @return
      */
-    public static void blitzer(String inputString) {
+    public static List<String> blitzer(String inputString) {
+        /*List for Output*/
+        List <String> blitzeroutput = new ArrayList<>();
         /*check format*/
         String[] data = inputString.split(";");
 
         if (data.length != 2) {
             System.err.println("Fehler: Ungültiges Eingabeformat. Erwartet: \"fahrzeugID;startzeit\"");
-            return;
+            return blitzeroutput;
         }
 
         String gesuchteFahrzeugID = data[0].trim();
@@ -83,28 +92,30 @@ public class Logik {
             boolean fahrerGefunden = false;
             for (Fahrer fahrer : Data.fahrerListe) {
                 if (fahrer.getFahrerID().equals(gefundenerFahrerId)) {
-                    System.out.println("Gefundener project.Fahrer: " + fahrer.getVorname() + " " + fahrer.getNachname());
-                    // Wenn du hier auch die Informationen aus deiner 'fahrersuche'-Methode möchtest,
-                    // rufe sie HIER auf:
-                    // fahrersuche(gefundenerFahrerId);
+                    blitzeroutput.add("Gefundener project.Fahrer: " + fahrer.getVorname() + " " + fahrer.getNachname());
                     fahrerGefunden = true;
                     break;
                 }
             }
             if (!fahrerGefunden) {
-                System.out.println("Fehler: project.Fahrer-ID '" + gefundenerFahrerId + "' aus project.Fahrt nicht in Fahrerliste gefunden.");
+                blitzeroutput.add("Fehler: project.Fahrer-ID '" + gefundenerFahrerId + "' aus project.Fahrt nicht in Fahrerliste gefunden.");
             }
         } else {
             /* search not successful*/
-            System.out.println("Kein project.Fahrer gefunden für Fahrzeug-ID: " + gesuchteFahrzeugID + " und Startzeit: " + gesuchteStartzeit);
+            blitzeroutput.add("Kein project.Fahrer gefunden für Fahrzeug-ID: " + gesuchteFahrzeugID + " und Startzeit: " + gesuchteStartzeit);
         }
+        return blitzeroutput;
     }
 
     /**
      * @param a in format "FahrerID;Datum".
-     * searching fahrerId is fundsucher and the date for the search is suchdatum
+     *          searching fahrerId is fundsucher and the date for the search is suchdatum
+     * @return
      */
-    public static void fundsuche(String a) {
+    public static List<String> fundsuche(String a) {
+        /*List to gather the output*/
+        List <String> fundsucheoutput = new ArrayList<>();
+
         /*Lists to collect the solutions*/
         List<String> gefundeneFahrzeuge = new ArrayList<>();
         List<String> gefundeneFahrer = new ArrayList<>();
@@ -114,7 +125,7 @@ public class Logik {
         String[] data = a.split(";");
         if (data.length < 2){
             System.err.println("Fehler: Das Eingabeformat ist ungültig");
-            return;
+            return fundsucheoutput;
         }
         String fundsucher = data[0].trim();
         String suchdatum = data[1].trim();
@@ -132,8 +143,8 @@ public class Logik {
 
         /*only continue if the fundsucher has driven on the day*/
         if (gefundeneFahrzeuge.isEmpty()){
-            System.out.println("Keine project.Fahrer gefunden!");
-            return;
+            fundsucheoutput.add("Keine project.Fahrer gefunden!");
+            return fundsucheoutput;
         }
         /*searching in the possible drives*/
         for (Fahrt fahrt : Data.fahrtenListe) {
@@ -154,14 +165,14 @@ public class Logik {
         }
 
         /*collect the needed info for output through iterating over the IDs*/
-        for (String currentFahrerId : gefundeneFahrer){ // Using 'currentFahrerId' for clarity
+        for (String currentFahrerId : gefundeneFahrer){
 
-            Fahrer gefundenerFahrer = null; // Correct: Reference variable for the project.Fahrer object
+            Fahrer gefundenerFahrer = null;
             /*search for the drivers in the main fahrerListe*/
-            for (Fahrer extrahierteFahrer : Data.fahrerListe){ // Corrected: Direct access to fahrerListe
-                if (extrahierteFahrer.getFahrerID().equals(currentFahrerId)) { // Correct: Using getId() for comparison
-                    gefundenerFahrer = extrahierteFahrer; // <<-- CORRECTED LINE 149: Assign the found project.Fahrer object
-                    break; // Driver found, no need to continue searching in fahrerListe
+            for (Fahrer extrahierteFahrer : Data.fahrerListe){
+                if (extrahierteFahrer.getFahrerID().equals(currentFahrerId)) {
+                    gefundenerFahrer = extrahierteFahrer;
+                    break;
                 }
             }
 
@@ -188,9 +199,13 @@ public class Logik {
         }
         /*output of the string*/
         if (ausgaben.isEmpty()){
-            System.out.println("Keine project.Fahrer gefunden. Viel Glück mit der Suche.");
+            fundsucheoutput.add("Keine project.Fahrer gefunden. Viel Glück mit der Suche.");
         } else {
-            System.out.println((String.join(", ", ausgaben))); //print the drivers
+            for (String currentFahrerID : ausgaben){
+                fundsucheoutput.add((String.join(", ", ausgaben)));
+            }
+
         }
+        return fundsucheoutput;
     }
 }
