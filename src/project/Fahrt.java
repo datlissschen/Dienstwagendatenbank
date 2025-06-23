@@ -1,15 +1,17 @@
 package project;
 
+import java.time.LocalDateTime;
+
 public class Fahrt {
 
     private final String fahrerID;
     private final String fahrzeugID;
     private final int startKm;
     private final int endKm;
-    private final String startzeit;
-    private final String endzeit;
+    private final LocalDateTime startzeit;
+    private final LocalDateTime endzeit;
 
-    public Fahrt(String fahrerID, String fahrzeugID, int startKm, int endKm, String startzeit, String endzeit) {
+    public Fahrt(String fahrerID, String fahrzeugID, int startKm, int endKm, LocalDateTime startzeit, LocalDateTime endzeit) {
         this.fahrerID = fahrerID;
         this.fahrzeugID = fahrzeugID;
         this.startKm = startKm;
@@ -34,11 +36,15 @@ public class Fahrt {
         return endKm;
     }
 
-    public String getStartzeit() {
+    public LocalDateTime getStartzeit() {
         return startzeit;
     }
 
-    public String getEndzeit() {
+    public LocalDateTime getEndzeit() {
         return endzeit;
+    }
+
+    public long getDauerInMinuten() {
+        return java.time.Duration.between(startzeit, endzeit).toMinutes();
     }
 }

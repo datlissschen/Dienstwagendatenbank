@@ -1,7 +1,8 @@
 package project;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 
 public class Logik {
@@ -62,168 +63,148 @@ public class Logik {
 
 
     /***
-     * find project.Fahrer for given time and Dienstwagen (FahrzeugID)
+     * find Fahrer for given time and Dienstwagen (FahrzeugID)
      * @param inputString Format: "fahrzeugID;startzeit" (z.B. "V_001;2025-06-19T08:00:00")
-     * @return
+     * @return null
      */
-    public List<String> blitzer(String inputString) {
-        /*List for Output*/
-        List <String> blitzeroutput = new ArrayList<>();
+    public String blitzer(String inputString) {
         /*check format*/
         String[] data = inputString.split(";");
 
+        /*catch insufficient input*/
         if (data.length != 2) {
-            System.err.println("Fehler: Ungültiges Eingabeformat. Erwartet: \"fahrzeugID;startzeit\"");
-            return blitzeroutput;
+            return null;
         }
 
         String gesuchteFahrzeugID = data[0].trim();
-        String gesuchteStartzeit = data[1].trim();
+        /*parse into the data format*/
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        LocalDateTime gesuchteStartzeit = null; //Variable needs to exist otuside of the try and catch block
+        try {
+            gesuchteStartzeit = LocalDateTime.parse(data[1].trim(), formatter);
+        } catch (java.time.format.DateTimeParseException e) {
+            return null;
+        }
 
-        String gefundenerFahrerId = null; // safe FahrerID here
-        boolean fahrtGefunden = false;   // flag if a project.Fahrt has actually been found
+        String gefundenerFahrerID = null; // safe FahrerID here
 
-        /* search project.Fahrt*/
+        /* search Fahrt*/
         for (Fahrt fahrt : dataFile.fahrtenListe) {
-            if (fahrt.getFahrzeugID().equals(gesuchteFahrzeugID) &&
-                    fahrt.getStartzeit().equals(gesuchteStartzeit)) {
-
-                gefundenerFahrerId = fahrt.getFahrerID(); /*safe FahrerID for the project.Fahrt*/
-                fahrtGefunden = true;
+            if (fahrt.getFahrzeugID().equals(gesuchteFahrzeugID) && fahrt.getStartzeit() != null
+                && fahrt.getStartzeit().equals(gesuchteStartzeit)) {
+                /*safe FahrerID for the Fahrt*/
+                gefundenerFahrerID = fahrt.getFahrerID();
                 break;
             }
         }
 
-        if (fahrtGefunden) {
-            /*find the project.Fahrer for the project.Fahrt*/
-            boolean fahrerGefunden = false;
+        /*find the Fahrer for the Fahrt*/
+        if (gefundenerFahrerID != null) {
             for (Fahrer fahrer : dataFile.fahrerListe) {
-                if (fahrer.getFahrerID().equals(gefundenerFahrerId)) {
-                    blitzeroutput.add("Gefundener project.Fahrer: " + fahrer.getVorname() + " " + fahrer.getNachname());
-                    fahrerGefunden = true;
-                    break;
+                if (fahrer.getFahrerID().equals(gefundenerFahrerID)) {
+                    return fahrer.getVorname() + " " + fahrer.getNachname(); //output
                 }
             }
-            if (!fahrerGefunden) {
-                blitzeroutput.add("Fehler: Fahrer-ID '" + gefundenerFahrerId + "' aus Fahrt nicht in Fahrerliste gefunden.");
-            }
-        } else {
-            /* search not successful*/
-            blitzeroutput.add("Kein Fahrer gefunden für Fahrzeug-ID: " + gesuchteFahrzeugID + " und Startzeit: " + gesuchteStartzeit);
         }
-        return blitzeroutput;
+        return null; /*no system.err.println for the projekttester*/
     }
 
     /**
      * @param a in format "FahrerID;Datum".
      *          searching fahrerId is fundsucher and the date for the search is suchdatum
-     * @return
+     * @return fundsucheoutput
      */
     public List<String> fundsuche(String a) {
         /*List to gather the output*/
         List <String> fundsucheoutput = new ArrayList<>();
 
-        /*Lists to collect the solutions*/
-        List<String> gefundeneFahrzeuge = new ArrayList<>();
-        List<String> gefundeneFahrer = new ArrayList<>();
-        List<String> ausgaben = new ArrayList<>();
+        /*Hashset to collect the solutions-> no duplicates in Hashsets(efficiency)*/
+        Set<String> gefundeneFahrzeuge = new HashSet<>();
+        Set<String> gefundeneFahrer = new HashSet<>();
 
         /*split the entry for day and the driver who needs the info and trim the split*/
-        String[] data = a.split(";");
-        if (data.length < 2){
+        String[] dataf = a.split(";");
+        if (dataf.length < 2){
             System.err.println("Fehler: Das Eingabeformat ist ungültig");
             return fundsucheoutput;
         }
-        String fundsucher = data[0].trim();
-        String suchdatum = data[1].trim();
+        String fundsucher = dataf[0].trim();
+        String suchdatum = dataf[1].trim();
 
-        /*everytime the driver has driven something on the day, save the FahrzeugID */
-        /*iterating through every drive*/
+        /*
+        *everytime the driver has driven something on the day, save FahrzeugID
+        *iterating through every drive
+        */
         for (Fahrt fahrt : dataFile.fahrtenListe) {
             if (fahrt.getFahrerID().equals(fundsucher)) {
-                /*Starzeit come in the format 2024-01-01T20:08:53, only need first 10 characters(0-9) for precise day*/
-                if (fahrt.getStartzeit() != null && fahrt.getStartzeit().length() >= 10 &&fahrt.getStartzeit().substring(0,10).equals(suchdatum)) {
+                /*Startzeit come in format 2024-01-01T20:08:53, only need first 10 characters(0-9) for precise day*/
+                if (fahrt.getStartzeit() != null && fahrt.getStartzeit().toString().length() >= 10 &&fahrt.getStartzeit().toString().substring(0,10).equals(suchdatum)) {
                     gefundeneFahrzeuge.add(fahrt.getFahrzeugID());
                 }
             }
         }
 
         /*only continue if the fundsucher has driven on the day*/
-        if (gefundeneFahrzeuge.isEmpty()){
-            fundsucheoutput.add("Keine project.Fahrer gefunden!");
-            return fundsucheoutput;
-        }
-        /*searching in the possible drives*/
+        if (gefundeneFahrzeuge.isEmpty()) return fundsucheoutput;
+
+        /*searching in possible drives*/
         for (Fahrt fahrt : dataFile.fahrtenListe) {
-            /*control the date*/
-            if (fahrt.getStartzeit() != null && fahrt.getStartzeit().substring(0, 10).equals(suchdatum)) {
-                /*make sure that the cars have been used by the fundsucher*/
+            /*control date*/
+            if (fahrt.getStartzeit() != null && fahrt.getStartzeit().toString().substring(0, 10).equals(suchdatum)) {
+                /*make sure that cars have been used by fundsucher*/
                 if (gefundeneFahrzeuge.contains(fahrt.getFahrzeugID())) {
-                    /*FahrerID cannot be fundsucher*/
-                    if (!fahrt.getFahrerID().equals(fundsucher)) {
-                        /*no duplicates*/
-                        // add FahrerID
-                        if (!gefundeneFahrer.contains(fahrt.getFahrerID())) {
-                            gefundeneFahrer.add(fahrt.getFahrerID());
-                        }
-                    }
+                    gefundeneFahrer.add(fahrt.getFahrerID()); // add FahrerID
                 }
             }
         }
 
-        /*collect the needed info for output through iterating over the IDs*/
+        Map<String, Fahrer> fahrerMap = new HashMap<>();
+        for (Fahrer fahrer : dataFile.fahrerListe) {
+            fahrerMap.put(fahrer.getFahrerID(), fahrer);
+        }
+
+        Map<String, Dienstwagen> dienstwagenMap = new HashMap<>();
+        for (Dienstwagen dw : dataFile.dienstwagenListe) {
+            dienstwagenMap.put(dw.getFahrzeugId(), dw);
+        }
+
+        Set<String> endgueltigeAusgaben = new HashSet<>(); // Set für Duplikatsvermeidung im Output
         for (String currentFahrerId : gefundeneFahrer){
+            Fahrer gefundenerFahrer = fahrerMap.get(currentFahrerId);
 
-            Fahrer gefundenerFahrer = null;
-            /*search for the drivers in the main fahrerListe*/
-            for (Fahrer extrahierteFahrer : dataFile.fahrerListe){
-                if (extrahierteFahrer.getFahrerID().equals(currentFahrerId)) {
-                    gefundenerFahrer = extrahierteFahrer;
-                    break;
-                }
-            }
-
-            /*search for the vehicles driven by this 'other' driver on the specified date and used by the fundsucher*/
             if (gefundenerFahrer != null){
                 for (Fahrt fundFahrt : dataFile.fahrtenListe){
-                    /* Check match the current 'other' driver, the date, AND a vehicle the fundsucher used*/
                     if (fundFahrt.getFahrerID().equals(currentFahrerId) &&
-                            fundFahrt.getStartzeit().length() >= 10 &&
-                            fundFahrt.getStartzeit().substring(0,10).equals(suchdatum) &&
+                            fundFahrt.getStartzeit() != null && fundFahrt.getStartzeit().toString().length() >= 10 &&
+                            fundFahrt.getStartzeit().toString().substring(0,10).equals(suchdatum) &&
                             gefundeneFahrzeuge.contains(fundFahrt.getFahrzeugID())) {
 
-                        /*required to be output format: Ben Wagner (S-GH-3277), Mia Hoffmann (S-GH-3277)*/
-                        String formatAusgabe = gefundenerFahrer.getVorname() + " " + gefundenerFahrer.getNachname() + " ("
-                                + fundFahrt.getFahrzeugID() + ")"; // Use 'gefundenerFahrer' for name parts
-
-                        /*no duplicates allowed in the final output list*/
-                        if (!ausgaben.contains(formatAusgabe)) {
-                            ausgaben.add(formatAusgabe);
+                        String kennzeichenOutput = fundFahrt.getFahrzeugID();
+                        Dienstwagen genutzterDienstwagen = dienstwagenMap.get(fundFahrt.getFahrzeugID());
+                        if (genutzterDienstwagen != null) {
+                            kennzeichenOutput = genutzterDienstwagen.getKennzeichen();
                         }
+
+                        String formatAusgabe = gefundenerFahrer.getVorname() + " " + gefundenerFahrer.getNachname() + " (" + kennzeichenOutput + ")";
+                        endgueltigeAusgaben.add(formatAusgabe);
                     }
                 }
             }
         }
-        /*output of the string*/
-        if (ausgaben.isEmpty()){
-            fundsucheoutput.add("Keine project.Fahrer gefunden. Viel Glück mit der Suche.");
-        } else {
-            for (String currentFahrerID : ausgaben){
-                fundsucheoutput.add((String.join(", ", currentFahrerID)));
-            }
-
-        }
+        fundsucheoutput.addAll(endgueltigeAusgaben);
         return fundsucheoutput;
     }
 
-    public void printFundsuchanfrage(List<String> ausgaben){
-        for (String s : ausgaben) {
-            System.out.print(s);
+    /*print methods*/
+    public void print(List<String> liste) {
+        for (String eintrag : liste) {
+            System.out.println(eintrag);
         }
     }
-    public void print(List<String> fundsucheoutput) {
-        for (String s : fundsucheoutput){
-            System.out.println(s);
+    public void printFundsuchanfrage(List<String> liste) {
+        for (String eintrag : liste) {
+            System.out.println(eintrag);
         }
     }
+
 }
