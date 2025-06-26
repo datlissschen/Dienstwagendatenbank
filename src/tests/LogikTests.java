@@ -12,18 +12,17 @@
 //public class LogikTests {
 //
 //    private Logik logik;
-//    private Data data
-//
+//    private Data data;
 //    @BeforeEach
 //    public void setUp() {
-//        logik = new Logik();
-//        data = new Data("src/project/dienstwagenprojet.db");
+//        data = new Data();
+//        logik = new Logik(data);
 //    }
 //
 //    /*test whether a Fahrer can be found by their Vorname*/
 //    @Test
 //    public void testFahrersuche_foundByVorname() {
-//        Data.fahrerListe.add(new Fahrer("F001", "Max", "Mustermann", "B"));
+//        data.fahrerListe.add(new Fahrer("F001", "Max", "Mustermann", "B"));
 //
 //        List<String> result = logik.fahrersuche("Max");
 //        assertTrue(result.isEmpty(), "Result should be empty because method does not populate output list");
@@ -32,7 +31,7 @@
 //    /*test whether a Dienstwagen can be found based on it's Kennzeichen*/
 //    @Test
 //    public void testFahrzeugsuche_foundByKennzeichen() {
-//        Data.dienstwagenListe.add(new Dienstwagen("V001", "S-AA-123", "BMW", "X1"));
+//        data.dienstwagenListe.add(new Dienstwagen("V001", "S-AA-123", "BMW", "X1"));
 //
 //        List<String> result = logik.fahrzeugsuche("X1");
 //
@@ -43,7 +42,7 @@
 //    /*Does the method act correct if there is no Dienstwagen for the search*/
 //    @Test
 //    public void testFahrzeugsuche_notFound() {
-//        Data.dienstwagenListe.add(new Dienstwagen("V001", "S-AA-123", "BMW", "X1"));
+//        data.dienstwagenListe.add(new Dienstwagen("V001", "S-AA-123", "BMW", "X1"));
 //
 //        List<String> result = logik.fahrzeugsuche("Tesla");
 //
@@ -54,8 +53,8 @@
 //    /*test the correct verification and output of the method blitzer*/
 //    @Test
 //    public void testBlitzer_matchFound() {
-//        Data.fahrerListe.add(new Fahrer("F002", "Lisa", "Müller", "B"));
-//        Data.fahrtenListe.add(new Fahrt("F002", "V002", 0, 100, "2025-06-19T08:00:00", "2025-06-19T09:00:00"));
+//        data.fahrerListe.add(new Fahrer("F002", "Lisa", "Müller", "B"));
+//        data.fahrtenListe.add(new Fahrt("F002", "V002", 0, 100, "2025-06-19T08:00:00", "2025-06-19T09:00:00"));
 //
 //        List<String> result = logik.blitzer("V002;2025-06-19T08:00:00");
 //

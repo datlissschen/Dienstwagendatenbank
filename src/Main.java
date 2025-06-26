@@ -10,7 +10,9 @@ public class Main {
 
         Data data = new Data("src/project/dienstwagenprojekt2025.db");
         Logik logik = new Logik(data);
-
+        for (Dienstwagen d : data.dienstwagenListe) {
+            System.out.println(d.getFahrzeugId());
+        }
         if (args.length > 0) {
             String arg1 = args[0];
 
@@ -22,6 +24,12 @@ public class Main {
                 String inputForFundsuche = arg1.substring(arg1.indexOf("=") + 1).replace("\"", "");
                 List<String> results = logik.fundsuche(inputForFundsuche);
                 System.out.println(String.join(",", results));
+            }
+        } else {
+            if (logik.fahrersuche("F008;2024-01-13") == null) {
+                System.out.println("null");
+            } else {
+                System.out.println("success");
             }
         }
 

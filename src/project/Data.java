@@ -11,4 +11,8 @@ public class Data {
     public Data(String fileName) {
         DataModellReader.populateModels(this, fileName);
     }
+
+    public Data() {
+
+    }
 }
