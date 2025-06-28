@@ -12,7 +12,7 @@ public class ProjektTester {
     private static String line;
 
     public static void main(String[] args) {
-        // Tests are passing
+        // Tests are passinga
         boolean passed = true;
 
         // geblitzt

@@ -89,9 +89,13 @@ public class Logik {
         String gefundenerFahrerID = null; // safe FahrerID here
 
         /* search Fahrt*/
+
         for (Fahrt fahrt : dataFile.fahrtenListe) {
-            if (fahrt.getFahrzeugID().equals(gesuchteFahrzeugID) && fahrt.getStartzeit() != null
-                && fahrt.getStartzeit().equals(gesuchteStartzeit)) {
+            LocalDateTime startTime = fahrt.getStartzeit();
+            LocalDateTime endTime = fahrt.getEndzeit();
+            boolean istInSpanne = !startTime.isAfter(gesuchteStartzeit) && !endTime.isBefore(gesuchteStartzeit);
+            boolean istEqual = startTime.equals(gesuchteStartzeit) || endTime.equals(gesuchteStartzeit);
+            if (fahrt.getFahrzeugID().equals(gesuchteFahrzeugID) && (istInSpanne)) {
                 /*safe FahrerID for the Fahrt*/
                 gefundenerFahrerID = fahrt.getFahrerID();
                 break;
