@@ -20,15 +20,15 @@ public class Main {
             } else if(arg1.startsWith("--fahrerDatum")) {
                 String inputForFundsuche = arg1.substring(arg1.indexOf("=") + 1).replace("\"", "");
                 List<String> results = logik.fundsuche(inputForFundsuche);
-                System.out.println(String.join(",", results));
+                System.out.println(String.join(", ", results));
             }
         }
 
         /*try some tests*/
-        String suchanfrageFahrer = "Hoff";
-        System.out.println("Starte Suche für Hoff");
-        logik.print(logik.fahrersuche(suchanfrageFahrer));
-//
+//        String suchanfrageFahrer = "Hoff";
+//        System.out.println("Starte Suche für Hoff");
+//        logik.print(logik.fahrersuche(suchanfrageFahrer));
+////
 //        String suchanfrageFahrzeuge = "Ford";
 //        System.out.println("Starte Suche für Fahrzeug ");
 //        logik.print(logik.fahrzeugsuche(suchanfrageFahrzeuge));
