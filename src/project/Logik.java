@@ -31,6 +31,26 @@ public class Logik {
         return fahrerOutput;
     }
 
+    public List <String> fahrzeugsuche(String a){
+        List <String> list = new ArrayList <>();
+        List <String> dienstwagenOutput = new ArrayList <>();
+        // iterate through List to find
+        for(Dienstwagen dienstwagen: dataFile.dienstwagenListe){
+            // if statement to check the different values
+            if(dienstwagen.getFahrzeugId().contains(a) ||
+                    dienstwagen.getHersteller().contains(a) ||
+                    dienstwagen.getKennzeichen().contains(a) ||
+                    dienstwagen.getModell().contains(a)){
+                dienstwagenOutput.add(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
+                        + ", " + dienstwagen.getHersteller() + ", " + dienstwagen.getModell());
+            }
+        }
+        if (dienstwagenOutput.isEmpty()){
+            dienstwagenOutput.add("Keine Dienstwagen vorhanden");
+        }
+        return dienstwagenOutput;
+    }
+
 
 
 //
@@ -233,6 +253,30 @@ public class Logik {
 //            fahrersoutput.add("No fahrers found");
 //        }
 //        return(fahrersoutput);
+//    }
+    /* find a Dienstwagen*/
+//    public List<String> fahrzeugsuche(String a) {
+//        /*List for ouput*/
+//        List<String> fahrzeugsout = new ArrayList<>();
+//        /*iterate through List to search for the matching dienstwagen objects*/
+//        for (Dienstwagen dienstwagen : dataFile.dienstwagenListe) {
+//            boolean found = false;
+//            if (dienstwagen.getFahrzeugId().contains(a)) {
+//                found = true;
+//            } else if (dienstwagen.getHersteller().contains(a)) {
+//                found = true;
+//            } else if (dienstwagen.getKennzeichen().contains(a)) {
+//                found = true;
+//            } else if (dienstwagen.getModell().contains(a)) {
+//                found = true;
+//            }
+//
+//            if (found) {
+//                fahrzeugsout.add(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
+//                        + ", " + dienstwagen.getHersteller() + ", " + dienstwagen.getModell());
+//            }
+//        }
+//        return fahrzeugsout;
 //    }
 
 }

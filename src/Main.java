@@ -11,9 +11,14 @@ public class Main {
         Data data = new Data("src/project/dienstwagenprojekt2025.db");
         Logik logik = new Logik(data);
 
+        //testing the logic
         String sucher = "Hoff";
         System.out.println("Starte Suche für Hoff");
         logik.print(logik.fahrersuche(sucher));
+
+        String dienstwagen = "Golf";
+        System.out.println("Starte Suche für Golf");
+        logik.print(logik.fahrzeugsuche(dienstwagen));
 //
 //        if (args.length > 0) {
 //            String arg1 = args[0];
