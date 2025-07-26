@@ -19,6 +19,13 @@ public class Main {
         String dienstwagen = "Golf";
         System.out.println("Starte Suche für Golf");
         logik.print(logik.fahrzeugsuche(dienstwagen));
+
+        String testinput = "V001;2024-01-01T19:00:00";
+        System.out.println("Starte Suche nach Raser");
+        logik.print(logik.blitzer(testinput));
+
+        String blitzerInput1 = "V001;2024-01-01T19:00:00";
+        logik.print(logik.blitzer(blitzerInput1));
 //
 //        if (args.length > 0) {
 //            String arg1 = args[0];

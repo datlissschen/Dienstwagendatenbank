@@ -5,7 +5,10 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+
+import static project.HelperMethods.convertToUnixTime;
 
 
 public class DataModellReader {
@@ -40,8 +43,17 @@ public class DataModellReader {
                 /*use class Fahrten*/
                 if (data.length == 6){
                     try{
-                        long startzeit = Long.parseLong(data[4].trim());
-                        long endzeit = Long.parseLong(data[5].trim());
+                        // 2024-08-03T19:17:0
+                        long startzeit = convertToUnixTime(data[4]);
+                        long endzeit = convertToUnixTime(data[5]);
+
+
+
+                        // 2024-01-30T00:40:28
+                        String[] endZeitString = data[5].split("T");
+
+
+
 
                         /*create a new object and parse startKm and endKm from String in int, add object to fahrtenListe*/
                         Fahrt neu = new Fahrt(data[0], data[1], Integer.parseInt(data[2].trim()), Integer.parseInt(data[3].trim()), startzeit, endzeit);
@@ -52,7 +64,7 @@ public class DataModellReader {
                         System.out.println("Verarbeite Zeile als project.Fahrt: " + line);
                         System.out.println("data[2]: '" + data[2] + "', data[3]: '" + data[3] + "'");
 
-                        System.err.println("Fehler beim Zahlenformat!");
+                        System.err.println("Fehler beim Zahlenformat!" + data[4] + " " + data[5]);
                     }
 
                 } else if(data.length == 4){
@@ -82,4 +94,21 @@ public class DataModellReader {
             System.err.println("Etwas ist falsch gelaufen (I/O exception)");
         }
     }
+
+//    private static long convertToUnixTime(String timeString){
+//        // 2024-08-03T19:17:0
+//        String[] split = timeString.split("T");
+//        String[] zeitStringJahre = split[0].split("-");
+//        int year = Integer.parseInt(zeitStringJahre[0]);
+//        int month = Integer.parseInt(zeitStringJahre[1]);
+//        int day = Integer.parseInt(zeitStringJahre[2]);
+//
+//        String[] zeitStringTage = split[1].split(":");
+//        int hour = Integer.parseInt(zeitStringTage[0]);
+//        int minute = Integer.parseInt(zeitStringTage[1]);
+//        int second = Integer.parseInt(zeitStringTage[2]);
+//
+//        LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, minute, second);
+//        return dateTime.toEpochSecond(ZoneOffset.UTC);
+//    }
 }

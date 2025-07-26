@@ -1,8 +1,8 @@
 package project;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static project.HelperMethods.convertToUnixTime;
 
 
 public class Logik {
@@ -12,7 +12,6 @@ public class Logik {
     }
 
     public List <String> fahrersuche(String a){
-        List <String> list = new ArrayList <>();
         List <String> fahrerOutput = new ArrayList <>();
         // iterate through List to find fahrer
         for(Fahrer fahrer: dataFile.fahrerListe){
@@ -32,7 +31,6 @@ public class Logik {
     }
 
     public List <String> fahrzeugsuche(String a){
-        List <String> list = new ArrayList <>();
         List <String> dienstwagenOutput = new ArrayList <>();
         // iterate through List to find
         for(Dienstwagen dienstwagen: dataFile.dienstwagenListe){
@@ -52,15 +50,147 @@ public class Logik {
     }
 
     /**
-     *
-     * @param
-     * @return
+     * Processing of speeding events
+     * @param input input from user to search the one who got a ticket in format: FAHRZEUG_ID;YYYY-MM-DD'T'HH:mm:ss
+     * @return ID of driver who was speeding,
+     * if no driver was found:"Kein Fahrer gefunden",
+     * error message if incorrect format
+     * @see Fahrt
+     * @see DataModellReader
      */
-    public String blitzer(String inputString){
+    public List<String> blitzer(String input){
+        //check format
+        String[] data = input.split(";");
+        if (data.length !=2){
+            return Collections.singletonList("Fehler: Eingabeformat ungültig. Erwartet: FAHRZEUG_ID;YYYY-MM-DD'T'HH:mm:ss");
+        }
+        String gesuchteFahrzeugID = data[0].trim();
+        String timestampStr = data[1].trim();
+        //parse time into unix
+        long timestampUnix = convertToUnixTime(timestampStr);
 
+
+        List <String> blitzerOutput = new ArrayList <>();
+        for(Fahrt fahrt: dataFile.fahrtenListe){
+            //calculating the difference for time
+            if (!gesuchteFahrzeugID.equals(  fahrt.getFahrzeugID())) continue;
+            if (!(timestampUnix >= fahrt.getStartzeit())) continue;
+            if (!(timestampUnix <= fahrt.getEndzeit())) continue;
+            blitzerOutput.add(fahrt.getFahrerID());
+
+        }
+        if (blitzerOutput.isEmpty()){
+            blitzerOutput.add("Kein Fahrer gefunden");
+        }
+        return blitzerOutput;
     }
 
 
+    public List<String>fundsuche(String input){
+        //split info
+        String[] data = input.split(";");
+        if (data.length !=2){
+            return Collections.singletonList("Fehler: Eingabeformat ungültig. Erwartet: ${Fahrer};${Datum}");
+        }
+        String suchenderFahrer = data[0].trim();
+        String dateStr = data[1].trim();
+        long startdateUnix = convertToUnixTime(dateStr + "T00:00:00");
+        long enddateUnix = convertToUnixTime(dateStr + "T23:59:59");
+
+        //getting the dienstwagen that were driven by the suchendeFahrer on the date
+        List <String> gefundeneDienstwagen = new ArrayList <>();
+        for(Fahrt fahrt: dataFile.fahrtenListe){
+            //calculating the time
+            if (!suchenderFahrer.equals(  fahrt.getFahrerID())) continue;
+            if (!(fahrt.getStartzeit() <= enddateUnix && fahrt.getEndzeit() >= startdateUnix)) continue;
+            gefundeneDienstwagen.add(fahrt.getFahrzeugID());
+
+        }
+        if (gefundeneDienstwagen.isEmpty()){
+            gefundeneDienstwagen.add("Keine Dienstwagen gefunden");
+        }
+
+        //getting the drivers that have driven the same vehicle on the given date
+        Set <String> gefundeneFahrer = new HashSet <>();
+        for (Fahrt fahrt: dataFile.fahrtenListe){
+            if(!(gefundeneDienstwagen.contains(fahrt.getFahrzeugID()))) continue;
+            if(!(fahrt.getFahrerID().equals(suchenderFahrer))) continue;
+            if(!(fahrt.getStartzeit() <= enddateUnix && fahrt.getEndzeit() >= startdateUnix)) continue;
+            gefundeneFahrer.add(fahrt.getFahrerID());
+        }
+        //getting the information on the drivers
+        List <String> fundsucheOutput = new ArrayList <>();
+        for (Fahrer fahrer: dataFile.fahrerListe){
+            if(gefundeneFahrer.contains(fahrer.getFahrerID())){
+                fundsucheOutput.add(fahrer.getVorname() + " " + fahrer.getNachname() +
+                        " (" + fahrer.getFahrerID() + ")");
+            }
+        }
+        return fundsucheOutput;
+    }
+
+
+    /*print methods*/
+    public void print(List<String> liste) {
+        for (String eintrag : liste) {
+            System.out.println(eintrag);
+        }
+    }
+    public void printFundsuchanfrage(List<String> liste) {
+        for (String eintrag : liste) {
+            System.out.println(eintrag);
+        }
+    }
+
+
+//    /*search for Fahrer object*/
+//    public List<String> fahrersuche(String a) {
+//        /*Use Liste for ouput*/
+//        List<String> fahrersoutput  = new ArrayList<>();
+//        /*iterate through List to find fahrer*/
+//        for (Fahrer fahrer : dataFile.fahrerListe) {
+//            boolean found = false;
+//            if (fahrer.getFahrerID().contains(a)) {
+//                found = true;
+//            } else if (fahrer.getVorname().contains(a)) {
+//                found = true;
+//            } else if (fahrer.getNachname().contains(a)) {
+//                found = true;
+//            }
+//            if (found) {
+//                fahrersoutput.add(fahrer.getFahrerID() + ", " + fahrer.getVorname()
+//                        + " " + fahrer.getNachname() + ", " + fahrer.getFuehrerscheinklasse());
+//            }
+//        }
+//        if (fahrersoutput.isEmpty()) {
+//            fahrersoutput.add("No fahrers found");
+//        }
+//        return(fahrersoutput);
+//    }
+    /* find a Dienstwagen*/
+//    public List<String> fahrzeugsuche(String a) {
+//        /*List for ouput*/
+//        List<String> fahrzeugsout = new ArrayList<>();
+//        /*iterate through List to search for the matching dienstwagen objects*/
+//        for (Dienstwagen dienstwagen : dataFile.dienstwagenListe) {
+//            boolean found = false;
+//            if (dienstwagen.getFahrzeugId().contains(a)) {
+//                found = true;
+//            } else if (dienstwagen.getHersteller().contains(a)) {
+//                found = true;
+//            } else if (dienstwagen.getKennzeichen().contains(a)) {
+//                found = true;
+//            } else if (dienstwagen.getModell().contains(a)) {
+//                found = true;
+//            }
+//
+//            if (found) {
+//                fahrzeugsout.add(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
+//                        + ", " + dienstwagen.getHersteller() + ", " + dienstwagen.getModell());
+//            }
+//        }
+//        return fahrzeugsout;
+//    }
 
 
 //    /***
@@ -114,6 +244,10 @@ public class Logik {
 //        return null; /*no system.err.println for the projekttester*/
 //    }
 //
+
+}
+
+
 //    /**
 //     * @param a in format "FahrerID;Datum".
 //     *          searching fahrerId is fundsucher and the date for the search is suchdatum
@@ -200,66 +334,3 @@ public class Logik {
 //        return fundsucheoutput;
 //    }
 //
-    /*print methods*/
-    public void print(List<String> liste) {
-        for (String eintrag : liste) {
-            System.out.println(eintrag);
-        }
-    }
-    public void printFundsuchanfrage(List<String> liste) {
-        for (String eintrag : liste) {
-            System.out.println(eintrag);
-        }
-    }
-
-
-//    /*search for Fahrer object*/
-//    public List<String> fahrersuche(String a) {
-//        /*Use Liste for ouput*/
-//        List<String> fahrersoutput  = new ArrayList<>();
-//        /*iterate through List to find fahrer*/
-//        for (Fahrer fahrer : dataFile.fahrerListe) {
-//            boolean found = false;
-//            if (fahrer.getFahrerID().contains(a)) {
-//                found = true;
-//            } else if (fahrer.getVorname().contains(a)) {
-//                found = true;
-//            } else if (fahrer.getNachname().contains(a)) {
-//                found = true;
-//            }
-//            if (found) {
-//                fahrersoutput.add(fahrer.getFahrerID() + ", " + fahrer.getVorname()
-//                        + " " + fahrer.getNachname() + ", " + fahrer.getFuehrerscheinklasse());
-//            }
-//        }
-//        if (fahrersoutput.isEmpty()) {
-//            fahrersoutput.add("No fahrers found");
-//        }
-//        return(fahrersoutput);
-//    }
-    /* find a Dienstwagen*/
-//    public List<String> fahrzeugsuche(String a) {
-//        /*List for ouput*/
-//        List<String> fahrzeugsout = new ArrayList<>();
-//        /*iterate through List to search for the matching dienstwagen objects*/
-//        for (Dienstwagen dienstwagen : dataFile.dienstwagenListe) {
-//            boolean found = false;
-//            if (dienstwagen.getFahrzeugId().contains(a)) {
-//                found = true;
-//            } else if (dienstwagen.getHersteller().contains(a)) {
-//                found = true;
-//            } else if (dienstwagen.getKennzeichen().contains(a)) {
-//                found = true;
-//            } else if (dienstwagen.getModell().contains(a)) {
-//                found = true;
-//            }
-//
-//            if (found) {
-//                fahrzeugsout.add(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
-//                        + ", " + dienstwagen.getHersteller() + ", " + dienstwagen.getModell());
-//            }
-//        }
-//        return fahrzeugsout;
-//    }
-
-}
