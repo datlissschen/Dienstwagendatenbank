@@ -40,11 +40,8 @@ public class DataModellReader {
                 /*use class Fahrten*/
                 if (data.length == 6){
                     try{
-                        /*secure the format for the date*/
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-
-                        LocalDateTime startzeit = LocalDateTime.parse(data[4].trim(), formatter);
-                        LocalDateTime endzeit = LocalDateTime.parse(data[5].trim(), formatter);
+                        long startzeit = Long.parseLong(data[4].trim());
+                        long endzeit = Long.parseLong(data[5].trim());
 
                         /*create a new object and parse startKm and endKm from String in int, add object to fahrtenListe*/
                         Fahrt neu = new Fahrt(data[0], data[1], Integer.parseInt(data[2].trim()), Integer.parseInt(data[3].trim()), startzeit, endzeit);

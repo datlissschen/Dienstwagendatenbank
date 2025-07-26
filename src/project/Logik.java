@@ -51,35 +51,18 @@ public class Logik {
         return dienstwagenOutput;
     }
 
+    /**
+     *
+     * @param
+     * @return
+     */
+    public String blitzer(String inputString){
+
+    }
 
 
-//
-//    /* find a Dienstwagen*/
-//    public List<String> fahrzeugsuche(String a) {
-//        /*List for ouput*/
-//        List<String> fahrzeugsout = new ArrayList<>();
-//        /*iterate through List to search for the matching dienstwagen objects*/
-//        for (Dienstwagen dienstwagen : dataFile.dienstwagenListe) {
-//            boolean found = false;
-//            if (dienstwagen.getFahrzeugId().contains(a)) {
-//                found = true;
-//            } else if (dienstwagen.getHersteller().contains(a)) {
-//                found = true;
-//            } else if (dienstwagen.getKennzeichen().contains(a)) {
-//                found = true;
-//            } else if (dienstwagen.getModell().contains(a)) {
-//                found = true;
-//            }
-//
-//            if (found) {
-//                fahrzeugsout.add(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
-//                        + ", " + dienstwagen.getHersteller() + ", " + dienstwagen.getModell());
-//            }
-//        }
-//        return fahrzeugsout;
-//    }
-//
-//
+
+
 //    /***
 //     * find Fahrer for given time and Dienstwagen (FahrzeugID)
 //     * @param inputString Format: "fahrzeugID;startzeit" (z.B. "V_001;2025-06-19T08:00:00")
