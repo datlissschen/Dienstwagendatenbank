@@ -10,19 +10,24 @@ public class Main {
 
         Data data = new Data("src/project/dienstwagenprojekt2025.db");
         Logik logik = new Logik(data);
-        if (args.length > 0) {
-            String arg1 = args[0];
 
-            if (arg1.startsWith("--fahrerZeitpunkt")) {
-                String inputForBlitzer = arg1.substring(arg1.indexOf("=") + 1).replace("\"", "");
-                String result = logik.blitzer(inputForBlitzer);
-                if (result != null) System.out.println(result);
-            } else if(arg1.startsWith("--fahrerDatum")) {
-                String inputForFundsuche = arg1.substring(arg1.indexOf("=") + 1).replace("\"", "");
-                List<String> results = logik.fundsuche(inputForFundsuche);
-                System.out.println(String.join(", ", results));
-            }
-        }
+        String sucher = "Hoff";
+        System.out.println("Starte Suche für Hoff");
+        logik.print(logik.fahrersuche(sucher));
+//
+//        if (args.length > 0) {
+//            String arg1 = args[0];
+//
+//            if (arg1.startsWith("--fahrerZeitpunkt")) {
+//                String inputForBlitzer = arg1.substring(arg1.indexOf("=") + 1).replace("\"", "");
+//                String result = logik.blitzer(inputForBlitzer);
+//                if (result != null) System.out.println(result);
+//            } else if(arg1.startsWith("--fahrerDatum")) {
+//                String inputForFundsuche = arg1.substring(arg1.indexOf("=") + 1).replace("\"", "");
+//                List<String> results = logik.fundsuche(inputForFundsuche);
+//                System.out.println(String.join(", ", results));
+//            }
+//        }
 
         /*try some tests*/
 //        String suchanfrageFahrer = "Hoff";
