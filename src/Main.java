@@ -11,30 +11,13 @@ public class Main {
         Data data = new Data("src/project/dienstwagenprojekt2025.db");
         Logik logik = new Logik(data);
 
-        //testing the logic
-//        String sucher = "Hoff";
-//        System.out.println("Starte Suche für Hoff");
-//        logik.print(logik.fahrersuche(sucher));
-//
-//        String dienstwagen = "Golf";
-//        System.out.println("Starte Suche für Golf");
-//        logik.print(logik.fahrzeugsuche(dienstwagen));
-//
-//        String testinput = "V001;2024-01-01T19:00:00";
-//        System.out.println("Starte Suche nach Raser");
-//        logik.print(logik.blitzer(testinput));
-//
-//        String fundsucherInput1 = "F003;2024-08-13";
-//        System.out.println("Starte Fundsuche");
-//        logik.printfundsuche(logik.fundsuche(fundsucherInput1));
-//
         if (args.length > 0) {
             String arg1 = args[0];
 
             if (arg1.startsWith("--fahrerZeitpunkt")) {
                 String inputForBlitzer = arg1.substring(arg1.indexOf("=") + 1).replace("\"", "");
-                String result = String.valueOf(logik.blitzer(inputForBlitzer));
-                if (result != null) System.out.println(result);
+                List<String> results = logik.blitzer(inputForBlitzer);
+                if (!results.isEmpty()) System.out.println(results.getFirst());
             } else if(arg1.startsWith("--fahrerDatum")) {
                 String inputForFundsuche = arg1.substring(arg1.indexOf("=") + 1).replace("\"", "");
                 List<String> results = logik.fundsuche(inputForFundsuche);

@@ -67,11 +67,18 @@ public class Logik {
         if (data.length != 2) {
             return Collections.singletonList("Fehler: Eingabeformat ungültig. Erwartet: FAHRZEUG_ID;YYYY-MM-DD'T'HH:mm:ss");
         }
-        String gesuchteFahrzeugID = data[0].trim();
+        String gesuchtesFahrzeuKennzeichenOrID = data[0].trim();
         String timestampStr = data[1].trim();
         //parse time into unix
         long timestampUnix = convertToUnixTime(timestampStr);
 
+        String gesuchteFahrzeugID = gesuchtesFahrzeuKennzeichenOrID;
+        for (Dienstwagen dienstwagen : dataFile.dienstwagenListe) {
+            if (dienstwagen.getKennzeichen().equals(gesuchtesFahrzeuKennzeichenOrID)) {
+                gesuchteFahrzeugID = dienstwagen.getFahrzeugId();
+                break;
+            }
+        }
 
         List<String> blitzerOutput = new ArrayList<>();
         List<String> gefundeneRaser = new ArrayList<>();
@@ -84,7 +91,7 @@ public class Logik {
 
         }
         if (gefundeneRaser.isEmpty()) {
-            blitzerOutput.add("Kein Fahrer gefunden");
+            blitzerOutput.add("Kein Fahrer gefunden für Fahrzeug-ID: " + gesuchteFahrzeugID + " und Startzeit: " + timestampStr);
         } else {
             for (Fahrer fahrer : dataFile.fahrerListe) {
                 if (gefundeneRaser.contains(fahrer.getFahrerID())) {
@@ -133,11 +140,13 @@ public class Logik {
 
         //getting the drivers that have driven the same vehicle on the given date
         Set<String> gefundeneFahrer = new HashSet<>();
+        Map<String, String> fahrerToFahrzeug = new HashMap<>();
         for (Fahrt fahrt : dataFile.fahrtenListe) {
             if (!(gefundeneDienstwagen.contains(fahrt.getFahrzeugID()))) continue;
             if (fahrt.getFahrerID().equals(suchenderFahrer)) continue;
             if (!(fahrt.getStartzeit() <= enddateUnix && fahrt.getEndzeit() >= startdateUnix)) continue;
             gefundeneFahrer.add(fahrt.getFahrerID());
+            fahrerToFahrzeug.put(fahrt.getFahrerID(), fahrt.getFahrzeugID());
         }
 
         // Map.put (Fahrer ID, Für fahrer ID entsprechnende Fahrer
@@ -146,8 +155,19 @@ public class Logik {
         for (Fahrer fahrer : dataFile.fahrerListe) {
             if (gefundeneFahrer.contains(fahrer.getFahrerID())) {
                 foundFahrer.add(fahrer.getVorname());
+
+                String fahrzeugID = fahrerToFahrzeug.get(fahrer.getFahrerID());
+
+                String kennzeichen = fahrzeugID;
+                for (Dienstwagen dienstwagen : dataFile.dienstwagenListe) {
+                    if (dienstwagen.getFahrzeugId().equals(fahrzeugID)) {
+                        kennzeichen = dienstwagen.getKennzeichen();
+                        break;
+                    }
+                }
+
                 fahrerMap.put(fahrer.getVorname(), fahrer.getVorname() + " " + fahrer.getNachname() +
-                        " (" + fahrer.getFahrerID() + ")");
+                        " (" + kennzeichen + ")");
             }
         }
         // Import the HashMap class
