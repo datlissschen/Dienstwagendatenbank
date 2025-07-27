@@ -12,34 +12,35 @@ public class Main {
         Logik logik = new Logik(data);
 
         //testing the logic
-        String sucher = "Hoff";
-        System.out.println("Starte Suche für Hoff");
-        logik.print(logik.fahrersuche(sucher));
-
-        String dienstwagen = "Golf";
-        System.out.println("Starte Suche für Golf");
-        logik.print(logik.fahrzeugsuche(dienstwagen));
-
-        String testinput = "V001;2024-01-01T19:00:00";
-        System.out.println("Starte Suche nach Raser");
-        logik.print(logik.blitzer(testinput));
-
-        String blitzerInput1 = "V001;2024-01-01T19:00:00";
-        logik.print(logik.blitzer(blitzerInput1));
+//        String sucher = "Hoff";
+//        System.out.println("Starte Suche für Hoff");
+//        logik.print(logik.fahrersuche(sucher));
 //
-//        if (args.length > 0) {
-//            String arg1 = args[0];
+//        String dienstwagen = "Golf";
+//        System.out.println("Starte Suche für Golf");
+//        logik.print(logik.fahrzeugsuche(dienstwagen));
 //
-//            if (arg1.startsWith("--fahrerZeitpunkt")) {
-//                String inputForBlitzer = arg1.substring(arg1.indexOf("=") + 1).replace("\"", "");
-//                String result = logik.blitzer(inputForBlitzer);
-//                if (result != null) System.out.println(result);
-//            } else if(arg1.startsWith("--fahrerDatum")) {
-//                String inputForFundsuche = arg1.substring(arg1.indexOf("=") + 1).replace("\"", "");
-//                List<String> results = logik.fundsuche(inputForFundsuche);
-//                System.out.println(String.join(", ", results));
-//            }
-//        }
+//        String testinput = "V001;2024-01-01T19:00:00";
+//        System.out.println("Starte Suche nach Raser");
+//        logik.print(logik.blitzer(testinput));
+//
+//        String fundsucherInput1 = "F003;2024-08-13";
+//        System.out.println("Starte Fundsuche");
+//        logik.printfundsuche(logik.fundsuche(fundsucherInput1));
+//
+        if (args.length > 0) {
+            String arg1 = args[0];
+
+            if (arg1.startsWith("--fahrerZeitpunkt")) {
+                String inputForBlitzer = arg1.substring(arg1.indexOf("=") + 1).replace("\"", "");
+                String result = String.valueOf(logik.blitzer(inputForBlitzer));
+                if (result != null) System.out.println(result);
+            } else if(arg1.startsWith("--fahrerDatum")) {
+                String inputForFundsuche = arg1.substring(arg1.indexOf("=") + 1).replace("\"", "");
+                List<String> results = logik.fundsuche(inputForFundsuche);
+                System.out.println(String.join(", ", results));
+            }
+        }
 
         /*try some tests*/
 //        String suchanfrageFahrer = "Hoff";
