@@ -128,14 +128,14 @@ public class Logik {
 
         }
         if (gefundeneDienstwagen.isEmpty()) {
-            gefundeneDienstwagen.add("Keine Dienstwagen gefunden");
+            return Collections.singletonList("Keine Dienstwagen gefunden");
         }
 
         //getting the drivers that have driven the same vehicle on the given date
         Set<String> gefundeneFahrer = new HashSet<>();
         for (Fahrt fahrt : dataFile.fahrtenListe) {
             if (!(gefundeneDienstwagen.contains(fahrt.getFahrzeugID()))) continue;
-            if (!(fahrt.getFahrerID().equals(suchenderFahrer))) continue;
+            if (fahrt.getFahrerID().equals(suchenderFahrer)) continue;
             if (!(fahrt.getStartzeit() <= enddateUnix && fahrt.getEndzeit() >= startdateUnix)) continue;
             gefundeneFahrer.add(fahrt.getFahrerID());
         }

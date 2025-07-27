@@ -1,6 +1,7 @@
 package project;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 public class HelperMethods {
@@ -18,6 +19,6 @@ public class HelperMethods {
         int second = Integer.parseInt(zeitStringTage[2]);
 
         LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, minute, second);
-        return dateTime.toEpochSecond(ZoneOffset.UTC);
+        return dateTime.atZone(ZoneId.of("Europe/Berlin")).toEpochSecond();
     }
 }
