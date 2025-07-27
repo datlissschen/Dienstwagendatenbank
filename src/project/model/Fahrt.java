@@ -1,6 +1,4 @@
-package project;
-
-import java.time.LocalDateTime;
+package project.model;
 
 public class Fahrt {
 

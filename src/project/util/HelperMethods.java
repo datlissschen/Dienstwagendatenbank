@@ -1,8 +1,7 @@
-package project;
+package project.util;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 
 public class HelperMethods {
     public static long convertToUnixTime(String timeString){

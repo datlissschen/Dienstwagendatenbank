@@ -94,7 +94,7 @@
 //        List<String> result = logik.fundsuche("F001");
 //
 //        assertEquals(1, result.size());
-//        assertEquals("Keine project.Fahrer gefunden!", result.get(0));
+//        assertEquals("Keine project.model.Fahrer gefunden!", result.get(0));
 //    }
 //
 //    /*test if the method acts correctly if fundsuche is not successful*/

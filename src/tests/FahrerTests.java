@@ -3,7 +3,7 @@ package tests;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-import project.*;
+import project.model.Fahrer;
 
 public class FahrerTests {
 

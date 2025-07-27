@@ -1,6 +1,7 @@
 import project.*;
+import project.io.DataModellReader;
+import project.io.ModelReader;
 
-import java.util.Collections;
 import java.util.List;
 
 public class Main {
@@ -8,7 +9,9 @@ public class Main {
 
         /*load the data in the beginning*/
 
-        Data data = new Data("src/project/dienstwagenprojekt2025.db");
+        Data data = new Data();
+        ModelReader reader = new DataModellReader("dienstwagenprojekt2025.db");
+        reader.populate(data);
         Logik logik = new Logik(data);
 
         if (args.length > 0) {
@@ -24,30 +27,5 @@ public class Main {
                 System.out.println(String.join(", ", results));
             }
         }
-
-        /*try some tests*/
-//        String suchanfrageFahrer = "Hoff";
-//        System.out.println("Starte Suche für Hoff");
-//        logik.print(logik.fahrersuche(suchanfrageFahrer));
-////
-//        String suchanfrageFahrzeuge = "Ford";
-//        System.out.println("Starte Suche für Fahrzeug ");
-//        logik.print(logik.fahrzeugsuche(suchanfrageFahrzeuge));
-//
-//        String blitzertest = "S-MN-9932;2024-02-14T13:57:43";
-//        System.out.println("Starte Blitzertest für: " + blitzertest);
-//        logik.print(Collections.singletonList(logik.blitzer(blitzertest)));
-//
-//        String fundsuchanfrageFahrer = "F003;2024-08-13"; // Beispiel-Suchanfrage
-//        System.out.println("Starte Fundsuche für: " + fundsuchanfrageFahrer);
-//        logik.print(logik.fundsuche(fundsuchanfrageFahrer));
-//
-//        data.fahrerListe.clear();
-//
-//        System.out.println("Starte Suche für Hoff");
-//        logik.print(logik.fahrersuche(suchanfrageFahrer));
-
-
-
     }
 }

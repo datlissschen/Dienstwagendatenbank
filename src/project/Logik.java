@@ -1,8 +1,13 @@
 package project;
 
+import project.io.DataModellReader;
+import project.model.Dienstwagen;
+import project.model.Fahrer;
+import project.model.Fahrt;
+
 import java.util.*;
 import java.util.HashMap;
-import static project.HelperMethods.convertToUnixTime;
+import static project.util.HelperMethods.convertToUnixTime;
 
 
 public class Logik {
@@ -12,15 +17,15 @@ public class Logik {
         this.dataFile = data;
     }
 
-    public List<String> fahrersuche(String a) {
+    public List<String> fahrersuche(String gesuchterFahrer) {
         List<String> fahrerOutput = new ArrayList<>();
         // iterate through List to find fahrer
-        for (Fahrer fahrer : dataFile.fahrerListe) {
+        for (Fahrer fahrer : dataFile.getFahrerListe()) {
             // if statement to check the different values
-            if (fahrer.getVorname().contains(a) ||
-                    fahrer.getNachname().contains(a) ||
-                    fahrer.getFahrerID().contains(a) ||
-                    fahrer.getFuehrerscheinklasse().contains(a)) {
+            if (fahrer.getVorname().contains(gesuchterFahrer) ||
+                    fahrer.getNachname().contains(gesuchterFahrer) ||
+                    fahrer.getFahrerID().contains(gesuchterFahrer) ||
+                    fahrer.getFuehrerscheinklasse().contains(gesuchterFahrer)) {
                 fahrerOutput.add(fahrer.getFahrerID() + ", " + fahrer.getVorname()
                         + " " + fahrer.getNachname() + ", " + fahrer.getFuehrerscheinklasse());
             }
@@ -31,15 +36,15 @@ public class Logik {
         return fahrerOutput;
     }
 
-    public List<String> fahrzeugsuche(String a) {
+    public List<String> fahrzeugsuche(String gesuchterDienstwagen) {
         List<String> dienstwagenOutput = new ArrayList<>();
         // iterate through List to find
-        for (Dienstwagen dienstwagen : dataFile.dienstwagenListe) {
+        for (Dienstwagen dienstwagen : dataFile.getDienstwagenListe()) {
             // if statement to check the different values
-            if (dienstwagen.getFahrzeugId().contains(a) ||
-                    dienstwagen.getHersteller().contains(a) ||
-                    dienstwagen.getKennzeichen().contains(a) ||
-                    dienstwagen.getModell().contains(a)) {
+            if (dienstwagen.getFahrzeugId().contains(gesuchterDienstwagen) ||
+                    dienstwagen.getHersteller().contains(gesuchterDienstwagen) ||
+                    dienstwagen.getKennzeichen().contains(gesuchterDienstwagen) ||
+                    dienstwagen.getModell().contains(gesuchterDienstwagen)) {
                 dienstwagenOutput.add(dienstwagen.getFahrzeugId() + ", " + dienstwagen.getKennzeichen()
                         + ", " + dienstwagen.getHersteller() + ", " + dienstwagen.getModell());
             }
@@ -73,7 +78,7 @@ public class Logik {
         long timestampUnix = convertToUnixTime(timestampStr);
 
         String gesuchteFahrzeugID = gesuchtesFahrzeuKennzeichenOrID;
-        for (Dienstwagen dienstwagen : dataFile.dienstwagenListe) {
+        for (Dienstwagen dienstwagen : dataFile.getDienstwagenListe()) {
             if (dienstwagen.getKennzeichen().equals(gesuchtesFahrzeuKennzeichenOrID)) {
                 gesuchteFahrzeugID = dienstwagen.getFahrzeugId();
                 break;
@@ -82,7 +87,7 @@ public class Logik {
 
         List<String> blitzerOutput = new ArrayList<>();
         List<String> gefundeneRaser = new ArrayList<>();
-        for (Fahrt fahrt : dataFile.fahrtenListe) {
+        for (Fahrt fahrt : dataFile.getFahrtenListe()) {
             //calculating the difference for time
             if (!gesuchteFahrzeugID.equals(fahrt.getFahrzeugID())) continue;
             if (!(timestampUnix >= fahrt.getStartzeit())) continue;
@@ -93,7 +98,7 @@ public class Logik {
         if (gefundeneRaser.isEmpty()) {
             blitzerOutput.add("Kein Fahrer gefunden für Fahrzeug-ID: " + gesuchteFahrzeugID + " und Startzeit: " + timestampStr);
         } else {
-            for (Fahrer fahrer : dataFile.fahrerListe) {
+            for (Fahrer fahrer : dataFile.getFahrerListe()) {
                 if (gefundeneRaser.contains(fahrer.getFahrerID())) {
                     blitzerOutput.add(fahrer.getVorname() + " " + fahrer.getNachname());
                 }
@@ -127,7 +132,7 @@ public class Logik {
 
         //getting the dienstwagen that were driven by the suchendeFahrer on the date
         List<String> gefundeneDienstwagen = new ArrayList<>();
-        for (Fahrt fahrt : dataFile.fahrtenListe) {
+        for (Fahrt fahrt : dataFile.getFahrtenListe()) {
             //calculating the time
             if (!suchenderFahrer.equals(fahrt.getFahrerID())) continue;
             if (!(fahrt.getStartzeit() <= enddateUnix && fahrt.getEndzeit() >= startdateUnix)) continue;
@@ -141,7 +146,7 @@ public class Logik {
         //getting the drivers that have driven the same vehicle on the given date
         Set<String> gefundeneFahrer = new HashSet<>();
         Map<String, String> fahrerToFahrzeug = new HashMap<>();
-        for (Fahrt fahrt : dataFile.fahrtenListe) {
+        for (Fahrt fahrt : dataFile.getFahrtenListe()) {
             if (!(gefundeneDienstwagen.contains(fahrt.getFahrzeugID()))) continue;
             if (fahrt.getFahrerID().equals(suchenderFahrer)) continue;
             if (!(fahrt.getStartzeit() <= enddateUnix && fahrt.getEndzeit() >= startdateUnix)) continue;
@@ -152,14 +157,14 @@ public class Logik {
         // Map.put (Fahrer ID, Für fahrer ID entsprechnende Fahrer
         HashMap<String, String> fahrerMap = new HashMap<>();
         List<String> foundFahrer = new ArrayList<>();
-        for (Fahrer fahrer : dataFile.fahrerListe) {
+        for (Fahrer fahrer : dataFile.getFahrerListe()) {
             if (gefundeneFahrer.contains(fahrer.getFahrerID())) {
                 foundFahrer.add(fahrer.getVorname());
 
                 String fahrzeugID = fahrerToFahrzeug.get(fahrer.getFahrerID());
 
                 String kennzeichen = fahrzeugID;
-                for (Dienstwagen dienstwagen : dataFile.dienstwagenListe) {
+                for (Dienstwagen dienstwagen : dataFile.getDienstwagenListe()) {
                     if (dienstwagen.getFahrzeugId().equals(fahrzeugID)) {
                         kennzeichen = dienstwagen.getKennzeichen();
                         break;
