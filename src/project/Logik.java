@@ -58,7 +58,7 @@ public class Logik {
     /**
      * Processing of speeding events
      *
-     * @param input input from user to search the one who got a ticket in format: FAHRZEUG_ID;YYYY-MM-DD'T'HH:mm:ss
+     * @param blitzerDaten input from user to search the one who got a ticket in format: FAHRZEUG_ID;YYYY-MM-DD'T'HH:mm:ss
      * @return ID of driver who was speeding,
      * if no driver was found:"Kein Fahrer gefunden",
      * error message if incorrect format
@@ -66,9 +66,9 @@ public class Logik {
      * @see Fahrer
      * @see DataModellReader
      */
-    public List<String> blitzer(String input) {
+    public List<String> blitzer(String blitzerDaten) {
         //check format
-        String[] data = input.split(";");
+        String[] data = blitzerDaten.split(";");
         if (data.length != 2) {
             return Collections.singletonList("Fehler: Eingabeformat ungültig. Erwartet: FAHRZEUG_ID;YYYY-MM-DD'T'HH:mm:ss");
         }
@@ -111,7 +111,7 @@ public class Logik {
     /**
      * finding possible people who have found an item
      *
-     * @param input the name of the searching driver and the date in format: ${Fahrer};${Datum}
+     * @param suchInfo the name of the searching driver and the date in format: ${Fahrer};${Datum}
      * @return fundsucheOutput a List of the drivers who shared the same vehicle as the searching driver
      * if no searching driver has not driven anythong on the date: "Keine Dienstwagen gefunden"
      * if no other driver can be found: Keine Fahrer gefunden"
@@ -119,9 +119,9 @@ public class Logik {
      * @see Fahrt
      * @see DataModellReader
      */
-    public List<String> fundsuche(String input) {
+    public List<String> fundsuche(String suchInfo) {
         //split info
-        String[] data = input.split(";");
+        String[] data = suchInfo.split(";");
         if (data.length != 2) {
             return Collections.singletonList("Fehler: Eingabeformat ungültig. Erwartet: ${Fahrer};${Datum}");
         }
@@ -190,8 +190,7 @@ public class Logik {
         return fahrersucheOutput;
     }
 
-
-    /*print methods*/
+    // general print method
     public void print(List<String> liste) {
         for (String eintrag : liste) {
             System.out.println(eintrag);

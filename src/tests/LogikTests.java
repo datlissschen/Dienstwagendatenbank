@@ -1,115 +1,109 @@
-//package tests;
-//
-//import org.junit.jupiter.api.*;
-//import java.io.ByteArrayOutputStream;
-//import java.io.PrintStream;
-//import java.util.List;
-//
-//import project.*;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//public class LogikTests {
-//
-//    private Logik logik;
-//    private Data data;
-//    @BeforeEach
-//    public void setUp() {
-//        data = new Data();
-//        logik = new Logik(data);
-//    }
-//
-//    /*test whether a Fahrer can be found by their Vorname*/
-//    @Test
-//    public void testFahrersuche_foundByVorname() {
-//        data.fahrerListe.add(new Fahrer("F001", "Max", "Mustermann", "B"));
-//
-//        List<String> result = logik.fahrersuche("Max");
-//        assertTrue(result.isEmpty(), "Result should be empty because method does not populate output list");
-//    }
-//
-//    /*test whether a Dienstwagen can be found based on it's Kennzeichen*/
-//    @Test
-//    public void testFahrzeugsuche_foundByKennzeichen() {
-//        data.dienstwagenListe.add(new Dienstwagen("V001", "S-AA-123", "BMW", "X1"));
-//
-//        List<String> result = logik.fahrzeugsuche("X1");
-//
-//        assertEquals(1, result.size());
-//        assertEquals("V001, S-AA-123, BMW, X1", result.get(0));
-//    }
-//
-//    /*Does the method act correct if there is no Dienstwagen for the search*/
-//    @Test
-//    public void testFahrzeugsuche_notFound() {
-//        data.dienstwagenListe.add(new Dienstwagen("V001", "S-AA-123", "BMW", "X1"));
-//
-//        List<String> result = logik.fahrzeugsuche("Tesla");
-//
-//        assertTrue(result.isEmpty());
-//    }
-//
-//
-//    /*test the correct verification and output of the method blitzer*/
-//    @Test
-//    public void testBlitzer_matchFound() {
-//        data.fahrerListe.add(new Fahrer("F002", "Lisa", "Müller", "B"));
-//        data.fahrtenListe.add(new Fahrt("F002", "V002", 0, 100, "2025-06-19T08:00:00", "2025-06-19T09:00:00"));
-//
-//        List<String> result = logik.blitzer("V002;2025-06-19T08:00:00");
-//
-//        assertEquals(1, result.size());
-//        assertEquals("Gefundener Fahrer: Lisa Müller", result.get(0));
-//    }
-//
-//    /* test if the blitzer acts correctly if there is no Fahrer for the method*/
-//    @Test
-//    public void testBlitzer_fahrtNotFound() {
-//        List<String> result = logik.blitzer("V999;2025-06-19T08:00:00");
-//
-//        assertEquals(1, result.size());
-//        assertEquals("Kein Fahrer gefunden für Fahrzeug-ID: V999 und Startzeit: 2025-06-19T08:00:00", result.get(0));
-//    }
-//
-//
-//
-//    /*test whether method correctly identifies other drivers who used the same vehicle on the same day as the "fundsucher"*/
-//    @Test
-//    public void testFundsuche_treffer() {
-//        Data.fahrerListe.add(new Fahrer("F001", "Ben", "Wagner", "B"));
-//        Data.fahrerListe.add(new Fahrer("F002", "Mia", "Hoffmann", "B"));
-//
-//        Data.fahrtenListe.add(new Fahrt("F001", "S-GH-3277", 100, 200, "2025-06-20T08:00:00", "2025-06-20T09:00:00"));
-//        Data.fahrtenListe.add(new Fahrt("F002", "S-GH-3277", 300, 400, "2025-06-20T10:00:00", "2025-06-20T11:00:00"));
-//
-//        List<String> result = logik.fundsuche("F001;2025-06-20");
-//
-//        assertEquals(1, result.size());
-//        assertEquals("Mia Hoffmann (S-GH-3277)", result.get(0));
-//    }
-//
-//    /*test whether the format/input is tested before using the function to catch errors*/
-//    @Test
-//    public void testFundsuche_invalidFormat() {
-//        List<String> result = logik.fundsuche("F001");
-//
-//        assertEquals(1, result.size());
-//        assertEquals("Keine project.model.Fahrer gefunden!", result.get(0));
-//    }
-//
-//    /*test if the method acts correctly if fundsuche is not successful*/
-//    @Test
-//    public void testFundsuche_noMatch() {
-//        Data.fahrerListe.add(new Fahrer("F001", "Ben", "Wagner", "B"));
-//        Data.fahrerListe.add(new Fahrer("F002", "Mia", "Hoffmann", "B"));
-//
-//        Data.fahrtenListe.add(new Fahrt("F001", "CAR-123", 0, 100, "2025-06-20T08:00:00", "2025-06-20T09:00:00"));
-//        Data.fahrtenListe.add(new Fahrt("F002", "CAR-456", 0, 100, "2025-06-20T08:00:00", "2025-06-20T09:00:00"));
-//
-//        List<String> result = logik.fundsuche("F001;2025-06-20");
-//
-//        assertEquals(1, result.size());
-//        assertEquals("Keine Fahrer gefunden. Viel Glück mit der Suche.", result.get(0));
-//    }
-//}
-//
+package tests;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import project.Data;
+import project.Logik;
+import project.model.*;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class LogikTests {
+
+    private Logik logik;
+
+    @BeforeEach
+    void setUp() {
+        Data testData = new Data();
+
+        // Fahrer
+        testData.addFahrer(new Fahrer("F1", "Max", "Mustermann", "B"));
+        testData.addFahrer(new Fahrer("F2", "Erika", "Musterfrau", "BE"));
+        testData.addFahrer(new Fahrer("F3", "Max", "Maier", "C"));
+
+        // Dienstwagen
+        testData.addDienstwagen(new Dienstwagen("V1", "BMW", "B-XY123", "320i"));
+        testData.addDienstwagen(new Dienstwagen("V2", "Audi", "B-AB456", "A4"));
+
+        // Fahrten
+        long start = 1722210000L;
+        long end = 1722213600L;
+        testData.addFahrt(new Fahrt("F1", "V1", 10000, 10100, start, end));
+        testData.addFahrt(new Fahrt("F2", "V1", 10100, 10200, start, end));
+        testData.addFahrt(new Fahrt("F3", "V2", 5000, 5100, start, end));
+
+        logik = new Logik(testData);
+    }
+
+    @Test
+    void testFahrersuche_byVorname() {
+        List<String> result = logik.fahrersuche("Max");
+        assertEquals(2, result.size());
+        assertTrue(result.get(0).contains("Mustermann") || result.get(1).contains("Mustermann"));
+    }
+
+    @Test
+    void testFahrzeugsuche_byKennzeichen() {
+        List<String> result = logik.fahrzeugsuche("B-XY");
+        assertEquals(1, result.size());
+        assertTrue(result.getFirst().contains("BMW"));
+    }
+
+    @Test
+    void testFahrzeugsuche_noMatch() {
+        List<String> result = logik.fahrzeugsuche("TESLA");
+        assertEquals(1, result.size());
+        assertEquals("Keine Dienstwagen vorhanden", result.getFirst());
+    }
+
+    @Test
+    void testFahrersuche_noMatch() {
+        List<String> result = logik.fahrersuche("Schmidt");
+        assertEquals(1, result.size());
+        assertEquals("Keine Fahrer vorhanden", result.getFirst());
+    }
+
+    @Test
+    void testBlitzer_wrongFormat() {
+        List<String> result = logik.blitzer("B-XY123");
+        assertEquals(1, result.size());
+        assertTrue(result.getFirst().startsWith("Fehler"));
+    }
+
+    @Test
+    void testBlitzer_noHit() {
+        List<String> result = logik.blitzer("B-XY123;2023-01-01T00:00:00");
+        assertEquals(1, result.size());
+        assertTrue(result.getFirst().startsWith("Kein Fahrer gefunden"));
+    }
+
+    @Test
+    void testFundsuche_match() {
+        // Erika (F2) und Max (F1) fahren am selben Tag dasselbe Fahrzeug
+        List<String> result = logik.fundsuche("F1;2024-07-29");
+        assertFalse(result.contains("Keine Fahrer gefunden"));
+        assertTrue(result.getFirst().contains("Erika Musterfrau"));
+    }
+
+    @Test
+    void testFundsuche_noDrivers() {
+        List<String> result = logik.fundsuche("F3;2024-07-29");
+        assertTrue(result.contains("Keine Fahrer gefunden"));
+    }
+
+    @Test
+    void testFundsuche_noFahrtenFound() {
+        List<String> result = logik.fundsuche("F1;2020-01-01");
+        assertEquals(1, result.size());
+        assertEquals("Keine Dienstwagen gefunden", result.getFirst());
+    }
+
+    @Test
+    void testFundsuche_wrongFormat() {
+        List<String> result = logik.fundsuche("F1");
+        assertEquals(1, result.size());
+        assertTrue(result.getFirst().startsWith("Fehler"));
+    }
+}

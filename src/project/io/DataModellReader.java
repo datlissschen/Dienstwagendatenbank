@@ -66,10 +66,11 @@ public class DataModellReader implements ModelReader {
                     }
                     catch(NumberFormatException e){
                         /*find mistake */
-                        System.out.println("Verarbeite Zeile als project.model.Fahrt: " + line);
-                        System.out.println("data[2]: '" + data[2] + "', data[3]: '" + data[3] + "'");
-
-                        System.err.println("Fehler beim Zahlenformat!" + data[4] + " " + data[5]);
+//                        System.out.println("Verarbeite Zeile als project.model.Fahrt: " + line);
+//                        System.out.println("data[2]: '" + data[2] + "', data[3]: '" + data[3] + "'");
+//
+//                        System.err.println("Fehler beim Zahlenformat!" + data[4] + " " + data[5]);
+                        continue;
                     }
 
                 } else if(data.length == 4){
