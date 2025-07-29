@@ -5,7 +5,7 @@ import java.time.ZoneId;
 
 public class HelperMethods {
     public static long convertToUnixTime(String timeString){
-        // 2024-08-03T19:17:0
+        // format: 2024-08-03T19:17:0
         String[] split = timeString.split("T");
         String[] zeitStringJahre = split[0].split("-");
         int year = Integer.parseInt(zeitStringJahre[0]);

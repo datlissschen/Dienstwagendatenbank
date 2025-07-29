@@ -15,7 +15,6 @@ public class Data {
 
 
     public Data() {
-
     }
 
     public List<Fahrt> getFahrtenListe() {

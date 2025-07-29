@@ -81,7 +81,6 @@ public class LogikTests {
 
     @Test
     void testFundsuche_match() {
-        // Erika (F2) und Max (F1) fahren am selben Tag dasselbe Fahrzeug
         List<String> result = logik.fundsuche("F1;2024-07-29");
         assertFalse(result.contains("Keine Fahrer gefunden"));
         assertTrue(result.getFirst().contains("Erika Musterfrau"));

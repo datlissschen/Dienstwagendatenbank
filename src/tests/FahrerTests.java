@@ -7,7 +7,7 @@ import project.model.Fahrer;
 
 public class FahrerTests {
 
-    /*testing the getters*/
+    // testing getters
     @Test
     public void testFahrerGetters() {
         Fahrer fahrer = new Fahrer("F001", "Max", "Mustermann", "B");
@@ -18,7 +18,7 @@ public class FahrerTests {
         assertEquals("B", fahrer.getFuehrerscheinklasse());
     }
 
-    /*testing if there are problems when Fahrer is empty*/
+    // testing if there are problems when Fahrer is empty
     @Test
     public void testEmptyFahrer() {
         Fahrer fahrer = new Fahrer("", "", "", "");

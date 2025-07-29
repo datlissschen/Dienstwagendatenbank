@@ -1,6 +1,6 @@
 package project;
 
-import project.io.DataModellReader;
+import project.io.DataModelReader;
 import project.model.Dienstwagen;
 import project.model.Fahrer;
 import project.model.Fahrt;
@@ -17,6 +17,13 @@ public class Logik {
         this.dataFile = data;
     }
 
+    /**
+     *
+     * @param gesuchterFahrer input to find possible matches
+     * @return fahrerOutput information about the possible matches
+     * if no fahrer was found: "Kein Fahrer gefunden."
+     * @see Fahrer
+     */
     public List<String> fahrersuche(String gesuchterFahrer) {
         List<String> fahrerOutput = new ArrayList<>();
         // iterate through List to find fahrer
@@ -36,9 +43,16 @@ public class Logik {
         return fahrerOutput;
     }
 
+    /**
+     *
+     * @param gesuchterDienstwagen input to find possible matches
+     * @return dienstwagenOuput information about the possible matches
+     * if no matches: "Kein Dienstwagen vorhanden"
+     * @see Dienstwagen
+     */
     public List<String> fahrzeugsuche(String gesuchterDienstwagen) {
         List<String> dienstwagenOutput = new ArrayList<>();
-        // iterate through List to find
+        // iterate through List to find Dienstwagen
         for (Dienstwagen dienstwagen : dataFile.getDienstwagenListe()) {
             // if statement to check the different values
             if (dienstwagen.getFahrzeugId().contains(gesuchterDienstwagen) ||
@@ -64,17 +78,17 @@ public class Logik {
      * error message if incorrect format
      * @see Fahrt
      * @see Fahrer
-     * @see DataModellReader
+     * @see DataModelReader
      */
     public List<String> blitzer(String blitzerDaten) {
-        //check format
+        // check format
         String[] data = blitzerDaten.split(";");
         if (data.length != 2) {
             return Collections.singletonList("Fehler: Eingabeformat ungültig. Erwartet: FAHRZEUG_ID;YYYY-MM-DD'T'HH:mm:ss");
         }
         String gesuchtesFahrzeuKennzeichenOrID = data[0].trim();
         String timestampStr = data[1].trim();
-        //parse time into unix
+        // parse time into unix
         long timestampUnix = convertToUnixTime(timestampStr);
 
         String gesuchteFahrzeugID = gesuchtesFahrzeuKennzeichenOrID;
@@ -87,16 +101,15 @@ public class Logik {
 
         List<String> blitzerOutput = new ArrayList<>();
         List<String> gefundeneRaser = new ArrayList<>();
+
         for (Fahrt fahrt : dataFile.getFahrtenListe()) {
-            //calculating the difference for time
             if (!gesuchteFahrzeugID.equals(fahrt.getFahrzeugID())) continue;
             if (!(timestampUnix >= fahrt.getStartzeit())) continue;
             if (!(timestampUnix <= fahrt.getEndzeit())) continue;
             gefundeneRaser.add(fahrt.getFahrerID());
-
         }
         if (gefundeneRaser.isEmpty()) {
-            blitzerOutput.add("Kein Fahrer gefunden für Fahrzeug-ID: " + gesuchteFahrzeugID + " und Startzeit: " + timestampStr);
+            blitzerOutput.add("Kein Fahrer gefunden für Fahrzeug-ID: " + gesuchteFahrzeugID + " am Datum: " + timestampStr);
         } else {
             for (Fahrer fahrer : dataFile.getFahrerListe()) {
                 if (gefundeneRaser.contains(fahrer.getFahrerID())) {
@@ -117,33 +130,33 @@ public class Logik {
      * if no other driver can be found: Keine Fahrer gefunden"
      * @see Fahrer
      * @see Fahrt
-     * @see DataModellReader
+     * @see DataModelReader
      */
     public List<String> fundsuche(String suchInfo) {
-        //split info
+        // split info
         String[] data = suchInfo.split(";");
         if (data.length != 2) {
             return Collections.singletonList("Fehler: Eingabeformat ungültig. Erwartet: ${Fahrer};${Datum}");
         }
         String suchenderFahrer = data[0].trim();
         String dateStr = data[1].trim();
+        // convert to Unix
         long startdateUnix = convertToUnixTime(dateStr + "T00:00:00");
         long enddateUnix = convertToUnixTime(dateStr + "T23:59:59");
 
-        //getting the dienstwagen that were driven by the suchendeFahrer on the date
+        //getting the Dienstwagen that were driven by the suchenderFahrer on the date
         List<String> gefundeneDienstwagen = new ArrayList<>();
         for (Fahrt fahrt : dataFile.getFahrtenListe()) {
-            //calculating the time
+            // calculating the time
             if (!suchenderFahrer.equals(fahrt.getFahrerID())) continue;
             if (!(fahrt.getStartzeit() <= enddateUnix && fahrt.getEndzeit() >= startdateUnix)) continue;
             gefundeneDienstwagen.add(fahrt.getFahrzeugID());
-
         }
         if (gefundeneDienstwagen.isEmpty()) {
             return Collections.singletonList("Keine Dienstwagen gefunden");
         }
 
-        //getting the drivers that have driven the same vehicle on the given date
+        // getting the drivers that have driven the same vehicle on given date
         Set<String> gefundeneFahrer = new HashSet<>();
         Map<String, String> fahrerToFahrzeug = new HashMap<>();
         for (Fahrt fahrt : dataFile.getFahrtenListe()) {
@@ -154,7 +167,7 @@ public class Logik {
             fahrerToFahrzeug.put(fahrt.getFahrerID(), fahrt.getFahrzeugID());
         }
 
-        // Map.put (Fahrer ID, Für fahrer ID entsprechnende Fahrer
+        // Map.put (Fahrer ID, Für fahrerID entsprechende Fahrer)
         HashMap<String, String> fahrerMap = new HashMap<>();
         List<String> foundFahrer = new ArrayList<>();
         for (Fahrer fahrer : dataFile.getFahrerListe()) {
@@ -190,7 +203,6 @@ public class Logik {
         return fahrersucheOutput;
     }
 
-    // general print method
     public void print(List<String> liste) {
         for (String eintrag : liste) {
             System.out.println(eintrag);
@@ -208,5 +220,4 @@ public class Logik {
         }
         System.out.println();
     }
-
 }

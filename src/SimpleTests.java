@@ -1,5 +1,5 @@
 import project.Data;
-import project.io.DataModellReader;
+import project.io.DataModelReader;
 import project.Logik;
 import project.io.ModelReader;
 
@@ -7,7 +7,7 @@ public class SimpleTests {
     public static void main(String[] args) {
         //testing the logic
         Data data = new Data();
-        ModelReader reader = new DataModellReader("dienstwagenprojekt2025.db");
+        ModelReader reader = new DataModelReader("dienstwagenprojekt2025.db");
         reader.populate(data);
         Logik logik = new Logik(data);
 

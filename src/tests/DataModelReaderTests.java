@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import project.Data;
 import project.exception.DataImportException;
-import project.io.DataModellReader;
+import project.io.DataModelReader;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,20 +12,20 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DataModellReaderTests {
+class DataModelReaderTests {
 
     private Path tempFile;
 
     @BeforeEach
     void setup() throws IOException {
-        // Temporäre Datei anlegen
+        // Temporary File
         tempFile = Files.createTempFile("data_model", ".csv");
     }
 
     @Test
     void testThrowsExceptionForMissingFile() {
         String nonExistentPath = "non_existent_file.csv";
-        DataModellReader reader = new DataModellReader(nonExistentPath);
+        DataModelReader reader = new DataModelReader(nonExistentPath);
 
         Data data = new Data();
         assertThrows(DataImportException.class, () -> reader.populate(data));
@@ -42,7 +42,7 @@ class DataModellReaderTests {
         Files.writeString(tempFile, content);
 
         Data data = new Data();
-        DataModellReader reader = new DataModellReader(tempFile.toString());
+        DataModelReader reader = new DataModelReader(tempFile.toString());
 
         assertDoesNotThrow(() -> reader.populate(data));
         assertEquals(1, data.getFahrerListe().size());
@@ -55,7 +55,7 @@ class DataModellReaderTests {
         Files.writeString(tempFile, "");
 
         Data data = new Data();
-        DataModellReader reader = new DataModellReader(tempFile.toString());
+        DataModelReader reader = new DataModelReader(tempFile.toString());
 
         reader.populate(data);
 
@@ -74,9 +74,9 @@ class DataModellReaderTests {
         Files.writeString(tempFile, content);
 
         Data data = new Data();
-        DataModellReader reader = new DataModellReader(tempFile.toString());
+        DataModelReader reader = new DataModelReader(tempFile.toString());
 
-        // Erwartung: keine Exception nach außen, Fahrt wird einfach nicht hinzugefügt
+        // Expection: no outer Exception
         assertDoesNotThrow(() -> reader.populate(data));
         assertEquals(1, data.getFahrerListe().size());
         assertEquals(1, data.getDienstwagenListe().size());

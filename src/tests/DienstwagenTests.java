@@ -7,7 +7,7 @@ import project.model.Dienstwagen;
 
 public class DienstwagenTests {
 
-    /*testing the getters*/
+    // testing getters
     @Test
     public void testDienstwagenGetters() {
         Dienstwagen wagen = new Dienstwagen("V001", "Audi", "A4", "M-AA 1234");
@@ -18,7 +18,7 @@ public class DienstwagenTests {
         assertEquals("M-AA 1234", wagen.getKennzeichen());
     }
 
-    /*testing if Dienstwagen acts correctc if it is empty*/
+    // testing if Dienstwagen acts correctc if empty
     @Test
     public void testEmptyStrings() {
         Dienstwagen wagen = new Dienstwagen("", "", "", "");

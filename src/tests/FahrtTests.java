@@ -9,7 +9,7 @@ class FahrtTests {
 
     @Test
     void testFahrtConstructorAndGetters() {
-        // Beispiel-Daten
+        // Beispiel-Datq
         String fahrerID = "F123";
         String fahrzeugID = "V456";
         int startKm = 10000;
@@ -19,7 +19,7 @@ class FahrtTests {
 
         Fahrt fahrt = new Fahrt(fahrerID, fahrzeugID, startKm, endKm, startzeit, endzeit);
 
-        // Tests der Getter
+        // Test Getter
         assertEquals(fahrerID, fahrt.getFahrerID());
         assertEquals(fahrzeugID, fahrt.getFahrzeugID());
         assertEquals(startKm, fahrt.getStartKm());
