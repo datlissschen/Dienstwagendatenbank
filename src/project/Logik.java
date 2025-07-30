@@ -18,7 +18,6 @@ public class Logik {
     }
 
     /**
-     *
      * @param gesuchterFahrer input to find possible matches
      * @return fahrerOutput information about the possible matches
      * if no fahrer was found: "Kein Fahrer gefunden."
@@ -44,7 +43,6 @@ public class Logik {
     }
 
     /**
-     *
      * @param gesuchterDienstwagen input to find possible matches
      * @return dienstwagenOuput information about the possible matches
      * if no matches: "Kein Dienstwagen vorhanden"
@@ -71,7 +69,6 @@ public class Logik {
 
     /**
      * Processing of speeding events
-     *
      * @param blitzerDaten input from user to search the one who got a ticket in format: FAHRZEUG_ID;YYYY-MM-DD'T'HH:mm:ss
      * @return ID of driver who was speeding,
      * if no driver was found:"Kein Fahrer gefunden",
@@ -123,7 +120,6 @@ public class Logik {
 
     /**
      * finding possible people who have found an item
-     *
      * @param suchInfo the name of the searching driver and the date in format: ${Fahrer};${Datum}
      * @return fundsucheOutput a List of the drivers who shared the same vehicle as the searching driver
      * if no searching driver has not driven anythong on the date: "Keine Dienstwagen gefunden"
@@ -159,17 +155,20 @@ public class Logik {
         // getting the drivers that have driven the same vehicle on given date
         Set<String> gefundeneFahrer = new HashSet<>();
         Map<String, String> fahrerToFahrzeug = new HashMap<>();
+        // iterate through Fahrten and get all IDs wo have driven the same vehicle on that day
         for (Fahrt fahrt : dataFile.getFahrtenListe()) {
             if (!(gefundeneDienstwagen.contains(fahrt.getFahrzeugID()))) continue;
             if (fahrt.getFahrerID().equals(suchenderFahrer)) continue;
             if (!(fahrt.getStartzeit() <= enddateUnix && fahrt.getEndzeit() >= startdateUnix)) continue;
             gefundeneFahrer.add(fahrt.getFahrerID());
+            // connect the FahrerId and the FahrzeugID
             fahrerToFahrzeug.put(fahrt.getFahrerID(), fahrt.getFahrzeugID());
         }
 
         // Map.put (Fahrer ID, Für fahrerID entsprechende Fahrer)
         HashMap<String, String> fahrerMap = new HashMap<>();
         List<String> foundFahrer = new ArrayList<>();
+        // iterate through driver and get the matching names to IDs to sort it later
         for (Fahrer fahrer : dataFile.getFahrerListe()) {
             if (gefundeneFahrer.contains(fahrer.getFahrerID())) {
                 foundFahrer.add(fahrer.getVorname());
@@ -188,7 +187,7 @@ public class Logik {
                         " (" + kennzeichen + ")");
             }
         }
-        // Import the HashMap class
+        // sort based on lexical literals
         Collections.sort(foundFahrer);
 
         List<String> fahrersucheOutput = new ArrayList<>();
